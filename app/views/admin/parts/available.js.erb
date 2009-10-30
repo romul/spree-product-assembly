@@ -1,0 +1,51 @@
+<script type="text/javascript">
+  function displayRow(){
+    var row = document.getElementById("captionRow");
+    if (row.style.display == '') row.style.display = 'none';
+    else row.style.display = '';
+  }
+</script>
+<h4><%= t('available_parts') %></h4>
+<% # admin_product_parts_path(@product) 
+%>
+<table class="index">
+	<thead>
+		<tr>
+  		<th><%= t("name") %></th>
+  		<th><%= t("options") %></th>
+  		<th><%= t("qty") %></th>
+  		<th></th>
+		</tr>
+	</thead>
+	<tbody>
+    <% @available_products.each do |product| %>
+      <tr id="<%= dom_id(product) %>">
+        
+        <td><%= product.name %></td>
+        <td>
+          <% if product.has_variants? %>
+            <%= select_tag "part[id]", 
+                options_for_select(product.variants.map { |v| [variant_options(v), v.id] }) %>
+          <% else %>
+            <%= hidden_field_tag "part[id]", product.master.id %>
+            <%= t :no_variants %>
+          <% end %>
+        </td>
+        <td><%= text_field_tag "part[count]", 1 %></td>
+		    <td class="actions">
+          <%= image_tag "spinner.gif", :style => "display:none", :id => "#{dom_id(product, :spinner)}" %>		    
+		      <%= link_to_remote icon('add') + ' ' + t('select'), 
+		                         {:url => admin_product_parts_path(@product),
+		                         :loading => "jQuery('##{dom_id(product, :spinner)}').show()",
+		                         :complete => "jQuery('##{dom_id(product, :spinner)}').hide();",
+		                         :with => "'part_count=' + $('#part_count', $(this).parent().parent()).val() + '&part_id=' + ($('#part_id option:selected', $(this).parent().parent()).val() || $('#part_id', $(this).parent().parent()).val()) "   
+		                         }, 
+		                         :class => 'iconlink' %>
+		    </td>           
+      </tr>
+    <% end %>
+    <% if @available_products.empty? %>
+     <tr><td colspan="3"><%= t('no_match_found') %>.</td></tr>
+    <% end %>
+  </tbody>
+</table>

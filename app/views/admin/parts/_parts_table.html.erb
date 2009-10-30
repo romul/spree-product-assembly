@@ -1,0 +1,32 @@
+<table class="index">
+  <thead>
+  	<tr>
+  	  <th><%= t("sku") %></th>
+  		<th><%= t("name") %></th>
+  		<th><%= t("options") %></th>
+  		<th><%= t("qty") %></th>
+  		<th></th>
+  	</tr>
+  </thead>
+  <tbody>
+    <% parts.each do |part| %>
+      <tr id="<%= dom_id(part, :sel)%>">
+        <td><%= part.sku %></td>
+        <td><%= part.product.name %></td>
+        <td><%= variant_options part %></td>
+        <td><%= @product.count_of part %></td>
+  	    <td class="actions">
+          <%= image_tag "spinner.gif", :style => "display:none", :id => "#{dom_id(part, :rem_spinner)}" %>		                         
+		      <%= link_to_remote icon('delete') + ' ' + t('remove'), 
+		                         {:url => remove_admin_product_part_url(@product, part),
+		                         :loading => "jQuery('##{dom_id(part, :rem_spinner)}').show()",
+		                         :complete => "jQuery('##{dom_id(part, :rem_spinner)}').hide();"}, 
+		                         :class => 'iconlink' %>
+  	    </td>        
+      </tr>
+    <% end %>
+    <% if parts.empty? %>
+     <tr><td colspan="3"><%= t('none') %>.</td></tr>
+    <% end %>
+  </tbody>
+</table>
