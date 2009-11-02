@@ -9,12 +9,11 @@ class ProductAssemblyExtension < Spree::Extension
   # Please use product_assembly/config/routes.rb instead for extension routes.
 
   def self.require_gems(config)
-    config.gem 'composite_primary_keys', :lib => 'composite_primary_keys'
-    require 'composite_primary_keys'
+    #config.gem 'composite_primary_keys', :lib => false
   end
   
   def activate
-    
+
     Admin::ProductsController.class_eval do
       before_filter :add_parts_tab
       private
@@ -60,7 +59,7 @@ class ProductAssemblyExtension < Spree::Extension
 
       def add_part(variant, count = 1)
         begin
-          ap = AssembliesPart.find(self.id, variant.id)        
+          ap = AssembliesPart.get(self.id, variant.id)        
           ap.count += count
           ap.save
         rescue
@@ -71,7 +70,7 @@ class ProductAssemblyExtension < Spree::Extension
       
       def remove_part(variant)
         begin
-          ap = AssembliesPart.find(self.id, variant.id)        
+          ap = AssembliesPart.get(self.id, variant.id)        
           ap.count -= 1
           if ap.count > 0
             ap.save
@@ -84,7 +83,7 @@ class ProductAssemblyExtension < Spree::Extension
       
       def set_part_count(variant, count)
         begin
-          ap = AssembliesPart.find(self.id, variant.id)
+          ap = AssembliesPart.get(self.id, variant.id)
           if count > 0        
             ap.count = count
             ap.save
@@ -105,10 +104,10 @@ class ProductAssemblyExtension < Spree::Extension
       
       def count_of(variant)
         begin
-          ap = AssembliesPart.find(self.id, variant.id)        
+          ap = AssembliesPart.get(self.id, variant.id)        
           ap.count
         rescue
-          1
+          0
         end         
       end
 
@@ -149,6 +148,6 @@ class ProductAssemblyExtension < Spree::Extension
         end      
       end
     end
-    
+
   end
 end
