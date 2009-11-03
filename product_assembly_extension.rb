@@ -118,18 +118,18 @@ class ProductAssemblyExtension < Spree::Extension
           if product.assembly?
             product.parts.each do |v|
               on_hand_units = self.retrieve_on_hand(v, quantity * product.count_of(v))
-              mark_units_as_selled(order, on_hand_units)
+              mark_units_as_selled(order, on_hand_units, quantity)
             end
           else
             on_hand_units = self.retrieve_on_hand(variant, quantity)
-            mark_units_as_selled(order, on_hand_units)
+            mark_units_as_selled(order, on_hand_units, quantity)
           end
         end
       end
       
       private
       
-      def self.mark_units_as_selled(order, units)       
+      def self.mark_units_as_selled(order, units, quantity)       
         # mark all of these units as sold and associate them with this order 
         units.each do |unit|          
           unit.order = order
