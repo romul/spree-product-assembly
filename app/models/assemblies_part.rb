@@ -4,9 +4,7 @@ class AssembliesPart < ActiveRecord::Base
 	belongs_to :part, :class_name => "Variant", :foreign_key => "part_id"
 	
 	def self.get(assembly_id, part_id)
-	  res = AssembliesPart.find_by_assembly_id_and_part_id(assembly_id, part_id)
-	  raise ActiveRecord::RecordNotFound if res.nil?
-	  res
+	  AssembliesPart.find_by_assembly_id_and_part_id(assembly_id, part_id)
 	end
 	
 	def save
