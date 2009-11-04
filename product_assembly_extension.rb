@@ -39,13 +39,13 @@ class ProductAssemblyExtension < Spree::Extension
         if self.assembly?
           parts.map{|v| v.on_hand / self.count_of(v) }.min
         else
-          orig_on_hand
+          self.orig_on_hand
         end
       end
 
       alias_method :orig_on_hand=, :on_hand=
       def on_hand=(new_level)
-        orig_on_hand=(new_level) unless self.assembly?
+        self.orig_on_hand=(new_level) unless self.assembly?
       end
 
       alias_method :orig_has_stock?, :has_stock?
@@ -53,7 +53,7 @@ class ProductAssemblyExtension < Spree::Extension
         if self.assembly?
           !parts.detect{|v| self.count_of(v) > v.on_hand}
         else
-          orig_has_stock?
+          self.orig_has_stock?
         end
       end
 
@@ -118,18 +118,18 @@ class ProductAssemblyExtension < Spree::Extension
           if product.assembly?
             product.parts.each do |v|
               on_hand_units = self.retrieve_on_hand(v, quantity * product.count_of(v))
-              mark_units_as_selled(order, on_hand_units, quantity)
+              mark_units_as_selled(order, on_hand_units, v, quantity)
             end
           else
             on_hand_units = self.retrieve_on_hand(variant, quantity)
-            mark_units_as_selled(order, on_hand_units, quantity)
+            mark_units_as_selled(order, on_hand_units, variant, quantity)
           end
         end
       end
       
       private
       
-      def self.mark_units_as_selled(order, units, quantity)       
+      def self.mark_units_as_selled(order, units, variant, quantity)       
         # mark all of these units as sold and associate them with this order 
         units.each do |unit|          
           unit.order = order

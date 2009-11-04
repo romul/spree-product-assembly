@@ -12,3 +12,6 @@ unless defined? SPREE_ROOT
   end
 end
 require "#{SPREE_ROOT}/test/test_helper"
+Dir["#{SPREE_ROOT}/test/factories/*.rb"].each {|f| require f }
+
+
