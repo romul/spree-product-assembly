@@ -32,6 +32,15 @@ class ProductAssemblyExtension < Spree::Extension
             :join_table => "assemblies_parts",
             :foreign_key => "assembly_id", :association_foreign_key => "part_id"
 
+      
+      named_scope :individual_saled, {
+        :conditions => ["products.individual_sale = ?", true]
+      }
+      
+      named_scope :active, lambda { |*args|
+        not_deleted.individual_saled.available(args.first).scope(:find)
+      }
+
 
       alias_method :orig_on_hand, :on_hand
       # returns the number of inventory units "on_hand" for this product
@@ -106,6 +115,7 @@ class ProductAssemblyExtension < Spree::Extension
       end
 
     end
+    
     
     
     InventoryUnit.class_eval do
