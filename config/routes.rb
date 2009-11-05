@@ -5,6 +5,6 @@ map.namespace :admin do |admin|
       product.resources :variants
       product.resources :option_types, :member => { :select => :get, :remove => :get}, :collection => {:available => :get, :selected => :get}
       product.resources :taxons, :member => {:select => :post, :remove => :post}, :collection => {:available => :post, :selected => :get}
-      product.resources :parts, :member => {:select => :post, :remove => :post}, :collection => {:available => :post, :selected => :get}
+      product.resources :parts, :member => {:select => :post, :remove => :post, :set_count => :post}, :collection => {:available => :post, :selected => :get}
     end
 end  

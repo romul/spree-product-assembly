@@ -14,9 +14,15 @@
         <td><%= part.sku %></td>
         <td><%= part.product.name %></td>
         <td><%= variant_options part %></td>
-        <td><%= @product.count_of part %></td>
+        <td><%= text_field_tag :count, @product.count_of(part) %></td>
   	    <td class="actions">
-          <%= image_tag "spinner.gif", :style => "display:none", :id => "#{dom_id(part, :rem_spinner)}" %>		                         
+          <%= image_tag "spinner.gif", :style => "display:none", :id => "#{dom_id(part, :rem_spinner)}" %>
+          <%= link_to_remote icon('edit') + ' ' + t('update'),
+                            {:url => set_count_admin_product_part_url(@product, part),
+		                         :loading => "jQuery('##{dom_id(part, :rem_spinner)}').show()",
+		                         :complete => "jQuery('##{dom_id(part, :rem_spinner)}').hide();",
+		                         :with => "'count=' + $('#count', $(this).parent().parent()).val()"},
+		                         :class => 'iconlink' %>                         
 		      <%= link_to_remote icon('delete') + ' ' + t('remove'), 
 		                         {:url => remove_admin_product_part_url(@product, part),
 		                         :loading => "jQuery('##{dom_id(part, :rem_spinner)}').show()",
