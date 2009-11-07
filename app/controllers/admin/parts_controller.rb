@@ -29,9 +29,13 @@ class Admin::PartsController < Admin::BaseController
     if params[:q].blank?
       @available_products = []
     else
-      @available_products = Product.find(:all, 
-        :conditions => ['lower(name) LIKE ? AND can_be_part = ?', "%#{params[:q].downcase}%", true])
-    end    
+      @available_products = 
+        Product.not_deleted.available.keywords(params[:q]).can_be_part_equals(true) +
+        Product.not_deleted.available.variants_sku_equals(params[:q]).can_be_part_equals(true) +
+        Product.not_deleted.available.master_sku_equals(params[:q]).can_be_part_equals(true)
+
+      @available_products.uniq!
+    end
     respond_to do |format|
       format.html
       format.js {render :layout => false}
