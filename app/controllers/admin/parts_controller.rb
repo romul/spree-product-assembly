@@ -17,7 +17,6 @@ class Admin::PartsController < Admin::BaseController
   
   def set_count
     @part = Variant.find(params[:id])
-    puts @part.id
     @product.set_part_count(@part, params[:count].to_i)
 		render :update do |page|
 			page.replace_html :product_parts, :partial => "parts_table", 
@@ -55,7 +54,6 @@ class Admin::PartsController < Admin::BaseController
   
   private
     def find_product
-    puts params.inspect
       @product = Product.find_by_permalink(params[:product_id])
       @product_admin_tabs << { :name => "Parts", :url => "admin_product_parts_url" }
     end  
