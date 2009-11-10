@@ -5,38 +5,24 @@
   <%= render :partial => "parts_table", :locals => {:parts => @parts} %>
 </div>
 
-
 <% form_tag('#') do %>
   <label><%= t('search') %>:</label>
   <input id="searchtext" size="25">
 <% end %>
 
+<br/>
+<div id="search_hits"></div>
 <% javascript_tag do %>
   function search_for_parts(){
-    jQuery.ajax({
-     data: {q: jQuery("#searchtext").val() }, 
+    $.ajax({
+     data: {q: $("#searchtext").val() }, 
      success: function(request){
-       jQuery('#search_hits').html(request);
+       $('#search_hits').html(request);
      }, 
      type: 'post', 
      url: '<%= available_admin_product_parts_url(@product) %>'
     });    
   }
-  
-  jQuery("#searchtext").keypress(function (e) {  
-    if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {  
-      search_for_parts();
-
-      return false;  
-    } else {  
-       return true;  
-    }  
-  });
-  
-  jQuery("#searchtext").delayedObserver(0.75, function(element, value) {
-    search_for_parts();
-  })
-<% end %>
-<br/>
-<div id="search_hits"></div>
+<% end -%>
+<%= javascript_include_tag 'product_assembly' %>
 
