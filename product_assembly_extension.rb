@@ -11,17 +11,17 @@ class ProductAssemblyExtension < Spree::Extension
   def self.require_gems(config)
     #config.gem 'composite_primary_keys', :lib => false
   end
-  
+
   def activate
 
-    Admin::ProductsController.class_eval do
+    Admin::BaseController.class_eval do
       before_filter :add_parts_tab
       private
       def add_parts_tab
         @product_admin_tabs << { :name => "Parts", :url => "admin_product_parts_url" }
       end
     end
-    
+
     Product.class_eval do
 
       has_and_belongs_to_many  :assemblies, :class_name => "Product",
@@ -32,11 +32,11 @@ class ProductAssemblyExtension < Spree::Extension
             :join_table => "assemblies_parts",
             :foreign_key => "assembly_id", :association_foreign_key => "part_id"
 
-      
+
       named_scope :individual_saled, {
         :conditions => ["products.individual_sale = ?", true]
       }
-      
+
       named_scope :active, lambda { |*args|
         not_deleted.individual_saled.available(args.first).scope(:find)
       }
@@ -68,56 +68,56 @@ class ProductAssemblyExtension < Spree::Extension
 
       def add_part(variant, count = 1)
         ap = AssembliesPart.get(self.id, variant.id)
-        unless ap.nil?       
+        unless ap.nil?
           ap.count += count
           ap.save
         else
           self.parts << variant
           set_part_count(variant, count) if count > 1
-        end        
+        end
       end
-      
+
       def remove_part(variant)
         ap = AssembliesPart.get(self.id, variant.id)
-        unless ap.nil?       
+        unless ap.nil?
           ap.count -= 1
           if ap.count > 0
             ap.save
           else
             ap.destroy
           end
-        end        
+        end
       end
-      
+
       def set_part_count(variant, count)
         ap = AssembliesPart.get(self.id, variant.id)
         unless ap.nil?
-          if count > 0        
+          if count > 0
             ap.count = count
             ap.save
           else
-            ap.destroy  
+            ap.destroy
           end
-        end         
+        end
       end
 
       def assembly?
         parts.present?
       end
-      
+
       def part?
         assemblies.present?
       end
-      
+
       def count_of(variant)
         ap = AssembliesPart.get(self.id, variant.id)
         ap ? ap.count : 0
       end
 
     end
-    
-    
-    
+
+
+
     InventoryUnit.class_eval do
       def self.sell_units(order)
         order.line_items.each do |line_item|
@@ -136,20 +136,20 @@ class ProductAssemblyExtension < Spree::Extension
           end
         end
       end
-      
+
       private
-      
-      def self.mark_units_as_selled(order, units, variant, quantity)       
-        # mark all of these units as sold and associate them with this order 
-        units.each do |unit|          
+
+      def self.mark_units_as_selled(order, units, variant, quantity)
+        # mark all of these units as sold and associate them with this order
+        units.each do |unit|
           unit.order = order
           unit.sell!
         end
         # right now we always allow back ordering
         backorder = quantity - units.size
-        backorder.times do 
+        backorder.times do
           order.inventory_units.create(:variant => variant, :state => "backordered")
-        end      
+        end
       end
     end
 
