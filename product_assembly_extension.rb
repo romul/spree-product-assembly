@@ -116,41 +116,49 @@ class ProductAssemblyExtension < Spree::Extension
 
     end
 
-
-
     InventoryUnit.class_eval do
       def self.sell_units(order)
         order.line_items.each do |line_item|
           variant = line_item.variant
           quantity = line_item.quantity
-
           product = variant.product
+
           if product.assembly?
             product.parts.each do |v|
-              on_hand_units = self.retrieve_on_hand(v, quantity * product.count_of(v))
-              mark_units_as_selled(order, on_hand_units, v, quantity)
+              self.mark_units_as_sold(order, v, quantity * product.count_of(v))
             end
           else
-            on_hand_units = self.retrieve_on_hand(variant, quantity)
-            mark_units_as_selled(order, on_hand_units, variant, quantity)
+            self.mark_units_as_sold(order, variant, quantity)
           end
         end
       end
 
       private
 
-      def self.mark_units_as_selled(order, units, variant, quantity)
+      def self.mark_units_as_sold(order, variant, quantity)
+        #Force reload in case of ReadOnly and too ensure correct onhand values
+        variant = Variant.find(variant.id)
+
         # mark all of these units as sold and associate them with this order
-        units.each do |unit|
-          unit.order = order
-          unit.sell!
-        end
-        # right now we always allow back ordering
-        backorder = quantity - units.size
-        backorder.times do
-          order.inventory_units.create(:variant => variant, :state => "backordered")
+        remaining_quantity = variant.count_on_hand - quantity
+
+        if (remaining_quantity >= 0)
+          quantity.times do
+            order.inventory_units.create(:variant => variant, :state => "sold")
+          end
+          variant.update_attribute(:count_on_hand, remaining_quantity)
+        else
+          (quantity + remaining_quantity).times do
+            order.inventory_units.create(:variant => variant, :state => "sold")
+          end
+          # right now we always allow back ordering
+          (-remaining_quantity).times do
+            order.inventory_units.create(:variant => variant, :state => "backordered")
+          end
+          variant.update_attribute(:count_on_hand, 0)
         end
       end
+
     end
 
   end
