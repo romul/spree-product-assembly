@@ -1,0 +1,16 @@
+<% if url_options_authenticate?(:controller => 'admin/taxons') %>
+  <li<%= ' class="active"' if current == "Parts" %>>
+    <%= link_to t("parts"), admin_product_parts_url(@product) %>
+  </li>
+<% end %>
+
+<% if @product.assembly? %>
+  <% content_for :head do %>
+    <script type="text/javascript">
+      jQuery(document).ready(function(){
+        $("ul.product-menu a:contains('<%= t("variants") %>')").parent().hide();
+        $("ul.product-menu a:contains('<%= t("option_types") %>')").parent().hide();
+      });
+    </script>
+  <% end %>
+<% end %>

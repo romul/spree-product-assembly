@@ -14,14 +14,6 @@ class ProductAssemblyExtension < Spree::Extension
 
   def activate
 
-    Admin::BaseController.class_eval do
-      before_filter :add_parts_tab
-      private
-      def add_parts_tab
-        @product_admin_tabs << { :name => "Parts", :url => "admin_product_parts_url" }
-      end
-    end
-
     Product.class_eval do
 
       has_and_belongs_to_many  :assemblies, :class_name => "Product",
