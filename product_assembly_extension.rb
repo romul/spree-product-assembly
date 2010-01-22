@@ -110,6 +110,7 @@ class ProductAssemblyExtension < Spree::Extension
 
     InventoryUnit.class_eval do
       def self.sell_units(order)
+        out_of_stock_items = []
         order.line_items.each do |line_item|
           variant = line_item.variant
           quantity = line_item.quantity
@@ -117,17 +118,19 @@ class ProductAssemblyExtension < Spree::Extension
 
           if product.assembly?
             product.parts.each do |v|
-              self.mark_units_as_sold(order, v, quantity * product.count_of(v))
+              out_of_stock_items += self.mark_units_as_sold(order, v, quantity * product.count_of(v))
             end
           else
-            self.mark_units_as_sold(order, variant, quantity)
+            out_of_stock_items += self.mark_units_as_sold(order, variant, quantity)
           end
         end
+        out_of_stock_items.flatten
       end
 
       private
 
       def self.mark_units_as_sold(order, variant, quantity)
+        out_of_stock_items = []
         #Force reload in case of ReadOnly and too ensure correct onhand values
         variant = Variant.find(variant.id)
 
@@ -143,12 +146,17 @@ class ProductAssemblyExtension < Spree::Extension
           (quantity + remaining_quantity).times do
             order.inventory_units.create(:variant => variant, :state => "sold")
           end
-          # right now we always allow back ordering
-          (-remaining_quantity).times do
-            order.inventory_units.create(:variant => variant, :state => "backordered")
-          end
+          if Spree::Config[:allow_backorders]
+            (-remaining_quantity).times do
+              order.inventory_units.create(:variant => variant, :state => "backordered")
+            end
+          else
+            line_item.update_attribute(:quantity, quantity + remaining_quantity)
+            out_of_stock_items << {:line_item => line_item, :count => -remaining_quantity}
+          end     
           variant.update_attribute(:count_on_hand, 0)
         end
+        out_of_stock_items
       end
 
     end
