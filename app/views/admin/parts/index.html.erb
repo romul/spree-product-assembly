@@ -18,6 +18,7 @@
      data: {q: $("#searchtext").val() }, 
      success: function(request){
        $('#search_hits').html(request);
+       $('#search_hits').show();
      }, 
      type: 'post', 
      url: '<%= available_admin_product_parts_url(@product) %>'
