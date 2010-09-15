@@ -37,7 +37,7 @@ class ProductAssemblyExtension < Spree::Extension
       alias_method :orig_on_hand, :on_hand
       # returns the number of inventory units "on_hand" for this product
       def on_hand
-        if self.assembly?
+        if self.assembly? && Spree::Config[:track_inventory_levels]
           parts.map{|v| v.on_hand / self.count_of(v) }.min
         else
           self.orig_on_hand
@@ -51,7 +51,7 @@ class ProductAssemblyExtension < Spree::Extension
 
       alias_method :orig_has_stock?, :has_stock?
       def has_stock?
-        if self.assembly?
+        if self.assembly? && Spree::Config[:track_inventory_levels]
           !parts.detect{|v| self.count_of(v) > v.on_hand}
         else
           self.orig_has_stock?
@@ -112,7 +112,7 @@ class ProductAssemblyExtension < Spree::Extension
       def self.sell_units(order)
         # we should not already have inventory associated with the order at this point but we should clear to be safe (#1394)
         order.inventory_units.destroy_all
-        
+
         out_of_stock_items = []
         order.line_items.each do |line_item|
           variant = line_item.variant
@@ -121,48 +121,98 @@ class ProductAssemblyExtension < Spree::Extension
 
           if product.assembly?
             product.parts.each do |v|
-              out_of_stock_items += self.mark_units_as_sold(order, v, quantity * product.count_of(v))
+              out_of_stock_items += create_units(order, v, quantity * product.count_of(v))
             end
           else
-            out_of_stock_items += self.mark_units_as_sold(order, variant, quantity)
+            out_of_stock_items += create_units(order, variant, quantity)
           end
         end
         out_of_stock_items.flatten
       end
 
-      private
-
-      def self.mark_units_as_sold(order, variant, quantity)
+      def self.adjust_units(order)
+        units_by_variant = order.inventory_units.group_by(&:variant_id)
         out_of_stock_items = []
-        #Force reload in case of ReadOnly and too ensure correct onhand values
-        variant = Variant.find(variant.id)
 
-        # mark all of these units as sold and associate them with this order
-        remaining_quantity = variant.count_on_hand - quantity
+        #check line items quantities match
+        order.line_items.each do |line_item|
+          if line_item.variant.product.assembly?
 
-        if (remaining_quantity >= 0)
-          quantity.times do
-            order.inventory_units.create(:variant => variant, :state => "sold")
-          end
-          variant.update_attribute(:count_on_hand, remaining_quantity)
-        else
-          (quantity + remaining_quantity).times do
-            order.inventory_units.create(:variant => variant, :state => "sold")
-          end
-          if Spree::Config[:allow_backorders]
-            (-remaining_quantity).times do
-              order.inventory_units.create(:variant => variant, :state => "backordered")
+            line_item.variant.product.parts.each do |variant|
+              quantity = line_item.quantity
+              unit_count = units_by_variant.key?(variant.id) ? units_by_variant[variant.id].size : 0
+
+              adjust_line(variant, quantity, unit_count, order, out_of_stock_items, units_by_variant)
+
+              #remove it from hash as it's up-to-date
+              units_by_variant.delete(variant.id)
             end
+
           else
-            line_item.update_attribute(:quantity, quantity + remaining_quantity)
-            out_of_stock_items << {:line_item => line_item, :count => -remaining_quantity}
-          end     
-          variant.update_attribute(:count_on_hand, 0)
+            variant = line_item.variant
+            quantity = line_item.quantity
+            unit_count = units_by_variant.key?(variant.id) ? units_by_variant[variant.id].size : 0
+
+            adjust_line(variant, quantity, unit_count, order, out_of_stock_items, units_by_variant)
+
+            #remove it from hash as it's up-to-date
+            units_by_variant.delete(variant.id)
+          end
+
         end
+
+        #check for deleted line items (if theres anything left in units_by_variant its' extra)
+        units_by_variant.each do |variant_id, units|
+          units.each {|unit| unit.restock!}
+        end
+
         out_of_stock_items
       end
 
+      private
+        def self.adjust_line(variant, quantity, unit_count, order, out_of_stock_items, units_by_variant)
+          if unit_count < quantity
+            out_of_stock_items.concat create_units(order, variant, (quantity - unit_count))
+          elsif  unit_count > quantity
+            (unit_count - quantity).times do
+              inventory_unit = units_by_variant[variant.id].pop
+              inventory_unit.restock!
+            end
+          end
+        end
     end
 
+
+    LineItem.class_eval do
+      def validate
+        unless quantity && quantity >= 0
+          errors.add(:quantity, I18n.t("validation.must_be_non_negative"))
+        end
+        # avoid reload of order.inventory_units by using direct lookup
+        unless !Spree::Config[:track_inventory_levels]                        ||
+               Spree::Config[:allow_backorders]                               ||
+               order   && InventoryUnit.order_id_equals(order).first.present? ||
+               variant && quantity <= variant.on_hand
+          errors.add(:quantity, I18n.t("validation.is_too_large") + " (#{self.variant.name})")
+        end
+
+        return unless variant
+
+        if variant.product.assembly?
+          variant.product.parts.each do |part|
+            if shipped_count = order.shipped_units.nil? ? nil : order.shipped_units[part]
+              errors.add(:quantity, I18n.t("validation.cannot_be_less_than_shipped_units") ) if quantity < shipped_count
+            end
+          end
+        else
+          if shipped_count = order.shipped_units.nil? ? nil : order.shipped_units[variant]
+            errors.add(:quantity, I18n.t("validation.cannot_be_less_than_shipped_units") ) if quantity < shipped_count
+          end
+        end
+      end
+
+    end
   end
 end
+
+
