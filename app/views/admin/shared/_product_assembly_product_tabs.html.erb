@@ -1,8 +1,6 @@
-<% if url_options_authenticate?(:controller => 'admin/taxons') %>
-  <li<%= ' class="active"' if current == "Parts" %>>
-    <%= link_to t("parts"), admin_product_parts_url(@product) %>
-  </li>
-<% end %>
+<li<%= ' class="active"' if current == "Parts" %>>
+  <%= link_to t("parts"), admin_product_parts_url(@product) %>
+</li>
 
 <% if @product.assembly? %>
   <% content_for :head do %>

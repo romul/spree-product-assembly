@@ -44,7 +44,7 @@
   </tbody>
 </table>
 
-<% javascript_tag do %>
+<%= javascript_tag do %>
   $("a.add_product_part_link").click(function(){
     part_id_val = $('select option:selected', $(this).parent().parent()).val() ||
                   $('input:first', $(this).parent().parent()).val();

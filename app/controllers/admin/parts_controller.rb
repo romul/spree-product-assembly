@@ -28,8 +28,9 @@ class Admin::PartsController < Admin::BaseController
     if params[:q].blank?
       @available_products = []
     else
+      @searcher = Spree::Config.searcher_class.new({})
       @available_products =
-        Product.not_deleted.available.keywords(params[:q]).can_be_part_equals(true) +
+        @searcher.send(:get_products_conditions_for, Product.not_deleted.available.can_be_part_equals(true), params[:q]) +
         Product.not_deleted.available.variants_sku_equals(params[:q]).can_be_part_equals(true) +
         Product.not_deleted.available.master_sku_equals(params[:q]).can_be_part_equals(true)
 

@@ -1,4 +1,4 @@
-class ProductAssemblyHooks < Spree::ThemeSupport::HookListener
+class SpreeProductAssemblyHooks < Spree::ThemeSupport::HookListener
 
   insert_after :admin_product_tabs, "admin/shared/product_assembly_product_tabs"
 
