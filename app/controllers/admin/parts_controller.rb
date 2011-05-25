@@ -9,30 +9,21 @@ class Admin::PartsController < Admin::BaseController
   def remove
     @part = Variant.find(params[:id])
     @product.remove_part(@part)
-    render :update do |page|
-      page.replace_html :product_parts, :partial => "parts_table",
-                        :locals => {:parts => @product.parts}
-    end
+    render :template => 'admin/parts/update_parts_table'
   end
 
   def set_count
     @part = Variant.find(params[:id])
     @product.set_part_count(@part, params[:count].to_i)
-    render :update do |page|
-      page.replace_html :product_parts, :partial => "parts_table",
-                        :locals => {:parts => @product.parts}
-    end
+    render :template => 'admin/parts/update_parts_table'
   end
 
   def available
     if params[:q].blank?
       @available_products = []
     else
-      @searcher = Spree::Config.searcher_class.new({})
-      @available_products =
-        @searcher.send(:get_products_conditions_for, Product.not_deleted.available.can_be_part_equals(true), params[:q]) +
-        Product.not_deleted.available.variants_sku_equals(params[:q]).can_be_part_equals(true) +
-        Product.not_deleted.available.master_sku_equals(params[:q]).can_be_part_equals(true)
+      query = "%#{params[:q]}%"
+      @available_products = Product.not_deleted.available.joins(:master).where("(products.name #{LIKE} ? OR variants.sku #{LIKE} ?) AND can_be_part = ?", query, query, true).limit(30)
 
       @available_products.uniq!
     end
@@ -46,11 +37,7 @@ class Admin::PartsController < Admin::BaseController
     @part = Variant.find(params[:part_id])
     qty = params[:part_count].to_i
     @product.add_part(@part, qty) if qty > 0
-    render :update do |page|
-      page.replace_html :product_parts, :partial => "parts_table",
-                        :locals => {:parts => @product.parts}
-      page.hide :search_hits
-    end
+    render :template => 'admin/parts/update_parts_table'
   end
 
   private

@@ -16,15 +16,15 @@ Product.class_eval do
   }
 
 
-  alias_method :orig_on_hand, :on_hand
   # returns the number of inventory units "on_hand" for this product
-  def on_hand
+  def on_hand_with_assembly
     if self.assembly? && Spree::Config[:track_inventory_levels]
       parts.map{|v| v.on_hand / self.count_of(v) }.min
     else
-      self.orig_on_hand
+      on_hand_without_assembly
     end
   end
+  alias_method_chain :on_hand, :assembly
 
   alias_method :orig_on_hand=, :on_hand=
   def on_hand=(new_level)

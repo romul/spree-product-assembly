@@ -11,7 +11,7 @@ unless defined? SPREE_ROOT
     require "#{File.expand_path(File.dirname(__FILE__) + "/../../../../")}/config/boot"
   end
 end
-require "#{SPREE_ROOT}/test/test_helper"
-Dir["#{SPREE_ROOT}/test/factories/*.rb"].each {|f| require f }
+#require "#{SPREE_ROOT}/test/test_helper"
+#Dir["#{SPREE_ROOT}/test/factories/*.rb"].each {|f| require f }
 
 
