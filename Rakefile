@@ -1,68 +1,75 @@
-# encoding: utf-8
 require 'rubygems'
-begin
-  require 'jeweler'
-rescue LoadError
-  puts "Jeweler not available. Install it with: sudo gem install jeweler"
-  exit 1
-end
-#gem 'rdoc', '= 2.2'
-require 'rdoc'
 require 'rake'
 require 'rake/testtask'
-require 'rake/rdoctask'
 require 'rake/packagetask'
 require 'rake/gempackagetask'
 
-Jeweler::Tasks.new do |s|
-  s.name = "spree_product_assembly"
-  s.summary = "Adds oportunity to make bundle of products to your Spree store."
-  s.description = s.summary
-  s.email = "roman@railsdog.com"
-  s.homepage = "http://github.com/spree/spree-product-assembly"
-  s.authors = ["Roman Smirnov"]
-  s.add_dependency 'spree_core', ['>= 0.30.0.beta1']
-  #s.has_rdoc = false
-  #s.extra_rdoc_files = [ "README.rdoc"]
-  #s.rdoc_options = ["--main", "README.rdoc", "--inline-source", "--line-numbers"]
-  #s.test_files = Dir['test/**/*.{yml,rb}']
-end
-Jeweler::GemcutterTasks.new
+gemfile = File.expand_path('../spec/test_app/Gemfile', __FILE__)
+if File.exists?(gemfile) && (%w(spec cucumber).include?(ARGV.first.to_s) || ARGV.size == 0)
+  require 'bundler'
+  ENV['BUNDLE_GEMFILE'] = gemfile
+  Bundler.setup
 
-desc 'Default: run unit tests.'
-task :default => :test
+  require 'rspec'
+  require 'rspec/core/rake_task'
+  RSpec::Core::RakeTask.new
 
-desc 'Test the product_assembly extension.'
-Rake::TestTask.new(:test) do |t|
-  t.libs << 'lib'
-  t.pattern = 'test/**/*_test.rb'
-  t.verbose = true
-end
-
-namespace :test do
-  desc 'Functional test the product_assembly extension.'
-  Rake::TestTask.new(:functionals) do |t|
-    t.libs << 'lib'
-    t.pattern = 'test/functional/*_test.rb'
-    t.verbose = true
-  end
-
-  desc 'Unit test the product_assembly extension.'
-  Rake::TestTask.new(:units) do |t|
-    t.libs << 'lib'
-    t.pattern = 'test/unit/*_test.rb'
-    t.verbose = true
+  require 'cucumber/rake/task'
+  Cucumber::Rake::Task.new do |t|
+    t.cucumber_opts = %w{--format progress}
   end
 end
 
-desc 'Generate documentation for the product_assembly extension.'
-Rake::RDocTask.new(:rdoc) do |rdoc|
-  rdoc.rdoc_dir = 'rdoc'
-  rdoc.title    = 'ProductAssemblyExtension'
-  rdoc.options << '--line-numbers' << '--inline-source'
-  rdoc.rdoc_files.include('README.markdown')
-  rdoc.rdoc_files.include('lib/**/*.rb')
+desc "Default Task"
+task :default => [:spec, :cucumber ]
+
+spec = eval(File.read('spree_openbravo.gemspec'))
+
+Rake::GemPackageTask.new(spec) do |p|
+  p.gem_spec = spec
 end
 
-# Load any custom rakefiles for extension
-# Dir[File.dirname(__FILE__) + '/lib/tasks/*.rake'].sort.each { |f| require f }
+desc "Release to gemcutter"
+task :release => :package do
+  require 'rake/gemcutter'
+  Rake::Gemcutter::Tasks.new(spec).define
+  Rake::Task['gem:push'].invoke
+end
+
+desc "Default Task"
+task :default => [ :spec ]
+
+desc "Regenerates a rails 3 app for testing"
+task :test_app do
+  require '../spree/lib/generators/spree/test_app_generator'
+  class SpreeProductAssemblyTestAppGenerator < Spree::Generators::TestAppGenerator
+
+    def install_gems
+      inside "test_app" do
+        run 'rake spree_core:install'
+        run 'rails g spree_product_assembly:install'
+      end
+    end
+
+    def migrate_db
+      run_migrations
+    end
+
+    protected
+    def full_path_for_local_gems
+      <<-gems
+gem 'spree_core', :path => \'#{File.join(File.dirname(__FILE__), "../spree/", "core")}\'
+gem 'spree_product_assembly', :path => \'#{File.dirname(__FILE__)}\'
+      gems
+    end
+
+  end
+  SpreeProductAssemblyTestAppGenerator.start
+end
+
+namespace :test_app do
+  desc 'Rebuild test and cucumber databases'
+  task :rebuild_dbs do
+    system("cd spec/test_app && rake db:drop db:migrate RAILS_ENV=test && rake db:drop db:migrate RAILS_ENV=cucumber")
+  end
+end
