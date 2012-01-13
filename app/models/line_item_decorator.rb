@@ -1,5 +1,10 @@
 LineItem.class_eval do
-  def validate
+  
+  validate :validate_quantity_and_stock
+
+  private
+
+  def validate_quantity_and_stock
     unless quantity && quantity >= 0
       errors.add(:quantity, I18n.t("validation.must_be_non_negative"))
     end
