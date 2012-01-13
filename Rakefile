@@ -23,7 +23,7 @@ end
 desc "Default Task"
 task :default => [:spec, :cucumber ]
 
-spec = eval(File.read('spree_openbravo.gemspec'))
+spec = eval(File.read('spree_product_assembly.gemspec'))
 
 Rake::GemPackageTask.new(spec) do |p|
   p.gem_spec = spec
