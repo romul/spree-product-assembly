@@ -1,0 +1,56 @@
+<script type="text/javascript">
+  function displayRow(){
+    var row = document.getElementById("captionRow");
+    if (row.style.display == '') row.style.display = 'none';
+    else row.style.display = '';
+  }
+</script>
+
+<h4><%= t('available_parts') %></h4>
+<table class="index">
+	<thead>
+		<tr>
+  		<th><%= t("name") %></th>
+  		<th><%= t("options") %></th>
+  		<th><%= t("qty") %></th>
+  		<th></th>
+		</tr>
+	</thead>
+	<tbody>
+    <% @available_products.each do |product| %>
+      <tr id="<%= dom_id(product) %>">
+        
+        <td><%= product.name %></td>
+        <td>
+          <% if product.has_variants? %>
+            <%= select_tag "part[id]", 
+                options_for_select(product.variants.map { |v| [variant_options(v), v.id] }) %>
+          <% else %>
+            <%= hidden_field_tag "part[id]", product.master.id %>
+            <%= t :no_variants %>
+          <% end %>
+        </td>
+        <td><%= text_field_tag "part[count]", 1 %></td>
+		    <td class="actions">
+          <%= image_tag "spinner.gif", :style => "display:none", :class => "spinner" %>
+		      <%= link_to(icon('add') + ' ' + t('select'), 
+		                  admin_product_parts_path(@product),
+		                  :class => "add_product_part_link") %>
+		    </td>           
+      </tr>
+    <% end %>
+    <% if @available_products.empty? %>
+     <tr><td colspan="3"><%= t('no_match_found') %>.</td></tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= javascript_tag do %>
+  $("a.add_product_part_link").click(function(){
+    part_id_val = $('select option:selected', $(this).parent().parent()).val() ||
+                  $('input:first', $(this).parent().parent()).val();
+    params = { part_count :  $('input:last', $(this).parent().parent()).val(),
+               part_id : part_id_val};
+    return make_post_request($(this), params);
+  });  
+<% end %>  

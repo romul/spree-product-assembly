@@ -1,30 +1,30 @@
-<%= render :partial => 'admin/shared/product_sub_menu' %>
+<%= render :partial => 'spree/admin/shared/product_sub_menu' %>
 
-<%= render :partial => 'admin/shared/product_tabs', :locals => {:current => "Parts"} %>
+<%= render :partial => 'spree/admin/shared/product_tabs', :locals => {:current => "Parts"} %>
 <div id="product_parts">
   <%= render :partial => "parts_table", :locals => {:parts => @parts} %>
 </div>
 
-<% form_tag('#') do %>
+<%= form_tag('#') do %>
   <label><%= t('search') %>:</label>
   <input id="searchtext" size="25">
 <% end %>
 
 <br/>
 <div id="search_hits"></div>
-<% javascript_tag do %>
+<%= javascript_tag do %>
   function search_for_parts(){
     $.ajax({
      data: {q: $("#searchtext").val() }, 
+     dataType: 'html',
      success: function(request){
-       $('#search_hits').html(request);
+       jQuery('#search_hits').html(request);
        $('#search_hits').show();
      }, 
-     type: 'post', 
-     dataType: 'script',
+     type: 'POST', 
      url: '<%= available_admin_product_parts_url(@product) %>'
     });    
   }
 <% end -%>
-<%= javascript_include_tag 'product_assembly' %>
+<%= javascript_include_tag 'admin/product_assembly' %>
 
