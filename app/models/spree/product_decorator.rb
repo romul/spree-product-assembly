@@ -1,5 +1,5 @@
 Spree::Product.class_eval do
-
+  
   has_and_belongs_to_many  :assemblies, :class_name => "Spree::Product",
         :join_table => "spree_assemblies_parts",
         :foreign_key => "part_id", :association_foreign_key => "assembly_id"
@@ -14,6 +14,8 @@ Spree::Product.class_eval do
   scope :active, lambda { |*args|
     not_deleted.individual_saled.available(args.first)
   }
+
+  attr_accessible :can_be_part, :individual_sale
 
   # returns the number of inventory units "on_hand" for this product
   def on_hand_with_assembly(reload = false)
