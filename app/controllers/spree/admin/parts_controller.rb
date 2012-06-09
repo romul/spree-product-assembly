@@ -37,7 +37,7 @@ class Spree::Admin::PartsController < Spree::Admin::BaseController
     @part = Spree::Variant.find(params[:part_id])
     qty = params[:part_count].to_i
     @product.add_part(@part, qty) if qty > 0
-    render :template => 'spree/admin/parts/update_parts_table'
+    render 'spree/admin/parts/update_parts_table'
   end
 
   private

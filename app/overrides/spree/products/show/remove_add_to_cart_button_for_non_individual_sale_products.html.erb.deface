@@ -1,0 +1,4 @@
+<!-- surround '[data-hook="cart_form"]' -->
+<% if @product.individual_sale? %>
+  <%= render_original %>
+<% end %>
