@@ -1,0 +1,18 @@
+<!-- insert_after '[data-hook="product_description"] div[itemprop="description"]' -->
+<% if @product.parts.any? %>
+<ul id="products" class="inline product-listing" data-hook>
+  <% @product.parts.each do |variant| %>
+    <% if Spree::Config[:show_zero_stock_products] || variant.has_stock? %>
+      <li id="product_<%= variant.product.id %>" class="columns three <%= cycle("alpha", "secondary", "", "omega secondary") %>" data-hook="products_list_item" itemscope itemtype="http://schema.org/Product">
+        <div class="product-image">
+          <%= link_to small_image(variant.product, :itemprop => "name"), variant.product %>
+        </div>
+        <%= link_to truncate(variant.product.name, :length => 50), variant.product, :class => 'info', :itemprop => "name", :title => variant.product.name %>
+        <% if variant.product.individual_sale? %>
+          <span class="price selling" itemprop="price"><%= number_to_currency variant.price %></span>
+        <% end %>
+      </li>
+    <% end %>
+  <% end %>
+</ul>
+<% end %>
