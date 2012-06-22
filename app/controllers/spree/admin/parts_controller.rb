@@ -9,13 +9,13 @@ class Spree::Admin::PartsController < Spree::Admin::BaseController
   def remove
     @part = Spree::Variant.find(params[:id])
     @product.remove_part(@part)
-    render :template => 'spree/admin/parts/update_parts_table'
+    render 'spree/admin/parts/update_parts_table'
   end
 
   def set_count
     @part = Spree::Variant.find(params[:id])
     @product.set_part_count(@part, params[:count].to_i)
-    render :template => 'spree/admin/parts/update_parts_table'
+    render 'spree/admin/parts/update_parts_table'
   end
 
   def available
