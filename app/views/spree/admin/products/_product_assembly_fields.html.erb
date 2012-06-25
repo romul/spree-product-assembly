@@ -11,7 +11,7 @@
   <% content_for :head do %>
     <script type="text/javascript">
       jQuery(document).ready(function(){
-        $("input[id='product_on_hand']").disable().parent().hide();
+        $("input[id='product_on_hand']").attr('disabled',true).parent().hide();
       });
     </script>
   <% end %>
