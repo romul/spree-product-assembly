@@ -1,5 +1,4 @@
 class Spree::Admin::PartsController < Spree::Admin::BaseController
-#  helper :products
   before_filter :find_product
 
   def index
