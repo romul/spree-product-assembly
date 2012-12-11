@@ -1,5 +1,5 @@
 # Basic sanity check
-shared_context "product should pass basic tests" do
+shared_examples "product should pass basic tests" do
   subject { @product }
   
 #  should validate_presence_of :name
@@ -67,8 +67,8 @@ end
 
 # Product w/out inventory units
 # the default behavior after product has been created
-shared_context "w/out inventory units" do
-  include_context "product should pass basic tests"
+shared_examples "w/out inventory units" do
+  it_behaves_like "product should pass basic tests"
   
   it "returns zero on_hand value" do
     @product.on_hand.should == 0

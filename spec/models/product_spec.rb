@@ -1,24 +1,24 @@
 # Some basic tests for Spree::Product.new vs. Spree::Product.create are defined to test
 # that Spree::Product creation vs instantiated behave the normal "rails way"
 #
-require File.dirname(__FILE__) + '/../spec_helper'
+require 'spec_helper'
 
 describe Spree::Product do
   
   before(:each) do
-    @product = Factory(:product, :name => "Foo Bar")
+    @product = FactoryGirl.create(:product, :name => "Foo Bar")
     @master_variant = Spree::Variant.find_by_product_id(@product.id, :conditions => ["is_master = ?", true])
   end
-  
-  after(:each) do
-    @product.destroy
-  end
-  
-  include_context "product should pass basic tests"
+    
+  it_behaves_like "product should pass basic tests"
   
   describe "New Spree::Product instantiated with on_hand" do
     before(:each) do
       @product = Spree::Product.new(:name => "fubaz", :price => "10.0", :on_hand => 5)
+    end
+
+    after(:each) do
+      @product.destroy
     end
     
     it "shouldnt have a product id" do
@@ -36,16 +36,14 @@ describe Spree::Product do
   
   describe "w/ variants" do
     before(:each) do
-      @product.variants << Factory(:variant)
-      @first_variant = @product.variants.first
+      @product.variants << FactoryGirl.create(:variant)
+      # @first_variant = @product.variants.first
     end
     
-    after(:each) { @first_variant.destroy }
-    
-    include_context "product should pass basic tests"
+    it_behaves_like "product should pass basic tests"
     
     it "has variants" do
-      @first_variant.should be_a(Spree::Variant)
+      @product.variants.first.should be_a(Spree::Variant)
     end
     
     it "returns true for has_variants?" do
@@ -53,26 +51,24 @@ describe Spree::Product do
     end
     
     describe "w/out inventory units" do
-      include_context "w/out inventory units"
+      before { @product.variants.first.on_hand = 0 }
+
+      it_behaves_like "w/out inventory units"
     end
   end
   
   
   describe "w/out variants" do
-    include_context "product should pass basic tests"
+    it_behaves_like "product should pass basic tests"
     
     it "returns false for has_variants?" do
       @product.should_not have_variants
     end
     
     describe "w/out inventory" do
-      include_context "w/out inventory units"
+      it_behaves_like "w/out inventory units"
     end
   end
-
-
-
-
 
   # in general
   describe "Spree::Product.available" do
