@@ -25,14 +25,14 @@ Spree::Product.class_eval do
       on_hand_without_assembly
     end
   end
-  alias_method_chain :on_hand, :assembly
+  alias_method_chain :on_hand, :assembly unless method_defined?(:on_hand_without_assembly)
 
-  alias_method :orig_on_hand=, :on_hand=
+  alias_method :orig_on_hand=, :on_hand= unless method_defined?(:orig_on_hand=)
   def on_hand=(new_level)
     self.orig_on_hand=(new_level) unless self.assembly?
   end
 
-  alias_method :orig_has_stock?, :has_stock?
+  alias_method :orig_has_stock?, :has_stock? unless method_defined?(:orig_has_stock?)
   def has_stock?
     if self.assembly? && Spree::Config[:track_inventory_levels]
       !parts.detect{|v| self.count_of(v) > v.on_hand}

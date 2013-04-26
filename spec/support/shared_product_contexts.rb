@@ -74,7 +74,7 @@ shared_examples "w/out inventory units" do
     @product.on_hand.should == 0
   end
   
-  it "returns true for master.has_stock?" do
+  it "returns false for master.has_stock?" do
     @product.master.in_stock?.should == false
   end
   

@@ -6,7 +6,7 @@ require 'spec_helper'
 describe Spree::Product do
   
   before(:each) do
-    @product = FactoryGirl.create(:product, :name => "Foo Bar")
+    @product = FactoryGirl.create(:base_product, :name => "Foo Bar")
     @master_variant = Spree::Variant.find_by_product_id(@product.id, :conditions => ["is_master = ?", true])
   end
     
