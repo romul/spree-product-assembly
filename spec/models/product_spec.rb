@@ -90,6 +90,41 @@ describe Spree::Product do
     end
   end
 
+  describe "Spree::Product.active" do
+    before(:each) do
+      Spree::Product.delete_all
+      @not_available = FactoryGirl.create(:product, :available_on => Time.now + 15.minutes)
+      @future_product = Factory.create(:product, :available_on => Time.now + 2.weeks)
+    end
+
+    it "includes available, individually saled, non deleted product with a price in the correct currency" do
+      product = FactoryGirl.create(:product, :available_on => Time.now - 15.minutes)
+      FactoryGirl.create(:price, variant: product.master)
+      Spree::Product.active('USD').should include(product)
+    end
+
+    it "excludes future products" do
+      product = FactoryGirl.create(:product, :available_on => Time.now + 15.minutes)
+      Spree::Product.active.should_not include(product)
+    end
+
+    it "excludes deleted products" do
+      product = FactoryGirl.create(:product, :deleted_at => Time.now - 15.minutes)
+      Spree::Product.active.should_not include(product)
+    end
+
+    it "excludes products which are only available as a part" do
+      product = FactoryGirl.create(:product, :individual_sale => false)
+      Spree::Product.active.should_not include(product)
+    end
+
+    it "excludes products which do not have a price in the correct currency" do
+      product = FactoryGirl.create(:product, :individual_sale => false)
+      FactoryGirl.create(:price, variant: product.master)
+      Spree::Product.active('GBP').should_not include(product)
+    end
+  end
+
   describe "instance" do
     before(:each) { @product = Factory(:product, :price => 19.99) }
     

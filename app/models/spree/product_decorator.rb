@@ -12,7 +12,7 @@ Spree::Product.class_eval do
   scope :individual_saled, where(["spree_products.individual_sale = ?", true])
 
   scope :active, lambda { |*args|
-    not_deleted.individual_saled.available(args.first)
+    not_deleted.individual_saled.available(nil, args.first)
   }
 
   attr_accessible :can_be_part, :individual_sale
