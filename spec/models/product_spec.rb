@@ -104,7 +104,7 @@ describe Spree::Product do
     end
 
     it "excludes future products" do
-      product = FactoryGirl.create(:product, :available_on => Time.now + 15.minutes)
+      product = create(:product, :available_on => Time.now + 15.minutes)
       Spree::Product.active.should_not include(product)
     end
 

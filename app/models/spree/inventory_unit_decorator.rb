@@ -1,9 +1,6 @@
 Spree::InventoryUnit.class_eval do
-  # UPGRADE_CHECK 
-  
   # Assigns inventory to a newly completed order.
   # Should only be called once during the life-cycle of an order, on transition to completed.
-  #
   def self.assign_opening_inventory(order)
     return [] unless order.completed?
 

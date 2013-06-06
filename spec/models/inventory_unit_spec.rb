@@ -2,14 +2,14 @@ require 'spec_helper'
 
 describe Spree::InventoryUnit do
   before(:each) do
-    @product = Factory(:product)
+    @product = create(:product)
     
-    @part_product_1 = Factory(:product, :can_be_part => true)
+    @part_product_1 = create(:product, :can_be_part => true)
     @part1 = @part_product_1.master
     @part1.on_hand = 5
     @part1.save
     
-    @part_product_2 = Factory(:product, :can_be_part => true)
+    @part_product_2 = create(:product, :can_be_part => true)
     @part2 = @part_product_2.master
     @part2.on_hand = 16
     @part2.save
@@ -17,7 +17,7 @@ describe Spree::InventoryUnit do
     @product.add_part @part1, 1
     @product.add_part @part2, 4
     
-    line_item = Factory(:line_item, :variant => @product.master, :quantity => 2)
+    line_item = create(:line_item, :variant => @product.master, :quantity => 2)
     
     @order = line_item.order.reload
     # completed? relies on completed_at timestamp

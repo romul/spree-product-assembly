@@ -9,13 +9,14 @@ require 'ffaker'
 # in spec/support/ and its subdirectories.
 Dir[File.join(File.dirname(__FILE__), "support/**/*.rb")].each {|f| require f }
 
-# Requires factories defined in spree_core
-require 'spree/core/testing_support/factories'
-# require 'spree/core/testing_support/env'
-require 'spree/core/url_helpers'
+require 'spree/testing_support/factories'
+require 'spree/testing_support/url_helpers'
 
 RSpec.configure do |config|
+  config.color = true
   config.mock_with :rspec
-  config.fixture_path = "#{::Rails.root}/spec/fixtures"
+
   config.use_transactional_fixtures = true
+
+  config.include FactoryGirl::Syntax::Methods
 end
