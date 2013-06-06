@@ -4,7 +4,7 @@ Spree::InventoryUnit.class_eval do
   def self.assign_opening_inventory(order)
     return [] unless order.completed?
 
-    #increase inventory to meet initial requirements
+    # increase inventory to meet initial requirements
     order.line_items.each do |line_item|
       variant = line_item.variant
       quantity = line_item.quantity

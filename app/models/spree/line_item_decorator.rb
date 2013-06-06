@@ -8,7 +8,7 @@ Spree::LineItem.class_eval do
       end
 
       # avoid reload of order.inventory_units by using direct lookup
-      unless !Spree::Config[:track_inventory_levels] || quantity < variant_stock_on_hand
+      unless !Spree::Config[:track_inventory_levels] || quantity > variant_stock_on_hand
         errors.add(:quantity, I18n.t("validation.is_too_large") + " (#{self.variant.name})")
       end
     end

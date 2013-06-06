@@ -6,12 +6,10 @@ describe Spree::InventoryUnit do
     
     @part_product_1 = create(:product, :can_be_part => true)
     @part1 = @part_product_1.master
-    @part1.on_hand = 5
     @part1.save
     
     @part_product_2 = create(:product, :can_be_part => true)
     @part2 = @part_product_2.master
-    @part2.on_hand = 16
     @part2.save
     
     @product.add_part @part1, 1
@@ -20,7 +18,6 @@ describe Spree::InventoryUnit do
     line_item = create(:line_item, :variant => @product.master, :quantity => 2)
     
     @order = line_item.order.reload
-    # completed? relies on completed_at timestamp
     @order.update_attribute(:completed_at, Time.now)
   end
   
