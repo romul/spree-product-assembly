@@ -1,10 +1,10 @@
 Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.name        = 'spree_product_assembly'
-  s.version     = '1.0.0'
+  s.version     = '2.0.0'
   s.summary     = 'Adds oportunity to make bundle of products to your Spree store'
   s.description = 'Adds oportunity to make bundle of products to your Spree store'
-  s.required_ruby_version = '>= 1.8.7'
+  s.required_ruby_version = '>= 1.9.3'
 
   s.author            = 'Roman Smirnov'
   s.email             = 'roman@railsdog.com'
@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
   s.require_path = 'lib'
   s.requirements << 'none'
 
-  s.add_dependency('spree', '~> 2.1.0.beta')
+  s.add_dependency('spree', '~> 2.0')
   
   s.add_development_dependency 'rspec-rails', '~> 2.13.0'
   s.add_development_dependency 'sqlite3'
