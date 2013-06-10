@@ -29,6 +29,7 @@ describe "Checkout" do
 
     click_button "Save and Continue"
     expect(current_path).to eql(spree.order_path(Spree::Order.last))
+    page.should have_content(variant.product.name)
   end
 
   def fill_in_address
