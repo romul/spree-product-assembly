@@ -1,14 +1,3 @@
 <li<%= ' class="active"' if current == "Parts" %>>
-  <%= link_to t("parts"), admin_product_parts_url(@product) %>
+  <%= link_to_with_icon 'icon-sitemap', t("parts"), admin_product_parts_url(@product) %>
 </li>
-
-<% if @product.assembly? %>
-  <% content_for :head do %>
-    <script type="text/javascript">
-      jQuery(document).ready(function(){
-        $("ul.product-menu a:contains('<%= t("variants") %>')").parent().hide();
-        $("ul.product-menu a:contains('<%= t("option_types") %>')").parent().hide();
-      });
-    </script>
-  <% end %>
-<% end %>
