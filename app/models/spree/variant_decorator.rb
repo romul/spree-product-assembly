@@ -4,6 +4,6 @@ Spree::Variant.class_eval do
         :foreign_key => "part_id", :association_foreign_key => "assembly_id"
 
   def assemblies_for(products)
-    assemblies.where("spree_assemblies_parts.assembly_id = ?", products)
+    assemblies.where(id: products)
   end
 end
