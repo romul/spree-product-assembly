@@ -37,15 +37,36 @@ describe "Checkout" do
   end
 
   context "backend order shipments UI", js: true do
-    include_context "purchases product with part included"
 
-    it "views parts bundled as well" do
-      visit spree.admin_orders_path
-      click_on Spree::Order.last.number
+    context "ordering only the product assembly" do
+      include_context "purchases product with part included"
 
-      page.should have_content(variant.product.name)
+      it "views parts bundled as well" do
+        visit spree.admin_orders_path
+        click_on Spree::Order.last.number
+
+        page.should have_content(variant.product.name)
+      end
     end
+
+    context "ordering assembly and the part as individual sale" do
+      before do
+        visit spree.root_path
+        click_link variant.product.name
+        click_button "add-to-cart-button"
+      end
+      include_context "purchases product with part included"
+
+      it "views parts bundled and not" do
+        visit spree.admin_orders_path
+        click_on Spree::Order.last.number
+
+        page.should have_content(variant.product.name)
+      end
+    end
+
   end
+
 
   def fill_in_address
     address = "order_bill_address_attributes"
