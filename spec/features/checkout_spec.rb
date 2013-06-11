@@ -11,25 +11,40 @@ describe "Checkout" do
   let(:product) { create(:product, :name => "RoR Mug") }
   let(:variant) { create(:variant) }
 
+  stub_authorization!
+
   before { product.parts.push variant }
 
-  it "purchases product with part included", :js => true do
-    add_product_to_cart
-    click_button "Checkout"
+  shared_context "purchases product with part included" do
+    before do
+      add_product_to_cart
+      click_button "Checkout"
 
-    fill_in "order_email", :with => "ryan@spreecommerce.com"
-    fill_in_address
+      fill_in "order_email", :with => "ryan@spreecommerce.com"
+      fill_in_address
 
-    click_button "Save and Continue"
-    expect(current_path).to eql(spree.checkout_state_path("delivery"))
-    page.should have_content(variant.product.name)
+      click_button "Save and Continue"
+      expect(current_path).to eql(spree.checkout_state_path("delivery"))
+      page.should have_content(variant.product.name)
 
-    click_button "Save and Continue"
-    expect(current_path).to eql(spree.checkout_state_path("payment"))
+      click_button "Save and Continue"
+      expect(current_path).to eql(spree.checkout_state_path("payment"))
 
-    click_button "Save and Continue"
-    expect(current_path).to eql(spree.order_path(Spree::Order.last))
-    page.should have_content(variant.product.name)
+      click_button "Save and Continue"
+      expect(current_path).to eql(spree.order_path(Spree::Order.last))
+      page.should have_content(variant.product.name)
+    end
+  end
+
+  context "backend order shipments UI", js: true do
+    include_context "purchases product with part included"
+
+    it "views parts bundled as well" do
+      visit spree.admin_orders_path
+      click_on Spree::Order.last.number
+
+      page.should have_content(variant.product.name)
+    end
   end
 
   def fill_in_address
