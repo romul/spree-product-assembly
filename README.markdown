@@ -2,12 +2,14 @@
 
 Create a product which is composed of other products.
 
+*This is still beta so beware it may not work as expected on Spree 2.0 for now.
+Still please try it out and let us know if you find any issues*
+
 ## Installation
 
 Add the following line to your Gemfile
 
     gem "spree_product_assembly", :git => "git://github.com/spree/spree-product-assembly.git"
-
 
 Run bundle install as well as the extension intall command to copy and run migrations
 
