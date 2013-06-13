@@ -7,11 +7,15 @@ module Spree
         build_splitter.split [product_assembly_package]
       end
 
-      # Returns a package with all products and parts from give stock location
+      # Returns a package with all products and parts from current stock location
       #
-      # Follows the same logic as `Packer#default_package` except that it also
-      # loops through associated product parts (which is really just another
-      # product / variant) to include them on the package if available
+      # Follows the same logic as `Packer#default_package` except that it
+      # loops through associated product parts (which is really just a
+      # product / variant) to include them on the package if available.
+      #
+      # The product bundle itself is not included on the shipment because it
+      # doesn't actually should have stock items. We track its parts stock items
+      # instead.
       def product_assembly_package
         package = Package.new(stock_location, order)
         order.line_items.each do |line_item|

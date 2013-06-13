@@ -16,16 +16,17 @@ module Spree
         end
       end
 
-      context 'product assembly package' do
-        let(:part) { create(:variant) }
+      context 'package bundle product parts' do
+        let(:variant) { create(:variant) }
+        let(:parts) { [variant, variant, variant] }
 
         before do
-          Product.last.parts << part
+          Product.last.parts << parts
         end
 
-        it 'contains all the items + part quantity included' do
+        it 'adds all bundle parts to the shipent' do
           package = subject.product_assembly_package
-          package.contents.size.should eq 6
+          package.contents.size.should eq 4 + parts.count
         end
 
         context "location doesn't have order items in stock" do
