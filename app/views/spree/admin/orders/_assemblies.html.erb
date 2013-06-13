@@ -1,0 +1,49 @@
+<% if order.line_items.assemblies.any? %>
+  <fieldset class="no-border-bottom">
+    <legend align="center" class="" data-hook="">
+      Product Bundles
+    </legend>
+  </fieldset>
+
+  <table class="" data-hook="">
+    <colgroup>
+      <col style="width: 10%;" />
+      <col style="width: 30%;" />
+      <col style="width: 15%;" />
+      <col style="width: 15%;" />
+      <col style="width: 15%;" />
+      <col style="width: 15%;" />
+    </colgroup>
+
+    <thead>
+      <th colspan="2"><%= Spree.t(:item_description) %></th>
+      <th><%= Spree.t(:price) %></th>
+      <th><%= Spree.t(:quantity) %></th>
+      <th><%= Spree.t(:total) %></th>
+      <th class="orders-actions actions" data-hook="admin_order_form_line_items_header_actions"></th>
+    </thead>
+
+    <% order.line_items.assemblies.each do |item| %>
+      <tbody>
+        <tr class="" data-item-quantity="<%= item.quantity %>">
+          <td class="item-image"><%= mini_image(item.variant) %></td>
+          <td class="item-name">
+            <%= item.variant.product.name %> - <%= item.variant.sku %> <br />
+            <%= "(" + variant_options(item.variant) + ")" unless item.variant.option_values.empty? %>
+          </td>
+          <td class="item-price align-center">
+            <%= item.single_money.to_html %>
+          </td>
+          <td class="item-qty-show align-center">
+            <%= item.quantity %>
+          </td>
+          <td class="item-total align-center">
+            <%= item.display_amount.to_html %>
+          </td>
+          <td class="cart-item-delete actions" data-hook="cart_item_delete">
+          </td>
+        </tr>
+      </tbody>
+    <% end %>
+  </table>
+<% end %>

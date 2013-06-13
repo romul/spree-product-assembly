@@ -1,0 +1,7 @@
+<!-- surround_contents '.stock-contents td.cart-item-delete' -->
+
+<% if item.variant.assemblies.any? %>
+  -----
+<% else %>
+  <%= render_original %>
+<% end %>
