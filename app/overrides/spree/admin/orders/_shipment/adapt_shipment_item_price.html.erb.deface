@@ -1,7 +1,0 @@
-<!-- surround_contents '.stock-contents td.item-price' -->
-
-<% if item.variant.assemblies.any? %>
-  Part of bundle <%= item.variant.assemblies_for(order.products).map(&:sku).join(", ") %>
-<% else %>
-  <%= render_original %>
-<% end %>
