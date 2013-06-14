@@ -3,7 +3,7 @@ require 'spec_helper'
 describe "Parts", js: true do
   stub_authorization!
 
-  let(:tshirt) { create(:product, :name => "T-Shit") }
+  let(:tshirt) { create(:product, :name => "T-Shirt") }
   let(:mug) { create(:product, :name => "Mug") }
 
   before do
