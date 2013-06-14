@@ -6,13 +6,13 @@
   }
 </script>
 
-<h4><%= t('available_parts') %></h4>
+<h4><%= Spree.t(:available_parts) %></h4>
 <table class="index">
 	<thead>
 		<tr>
-  		<th><%= t("name") %></th>
-  		<th><%= t("options") %></th>
-  		<th><%= t("qty") %></th>
+  		<th><%= Spree.t(:name) %></th>
+  		<th><%= Spree.t(:options) %></th>
+  		<th><%= Spree.t(:qty) %></th>
   		<th></th>
 		</tr>
 	</thead>
@@ -27,20 +27,20 @@
                 options_for_select(product.variants.map { |v| [variant_options(v), v.id] }) %>
           <% else %>
             <%= hidden_field_tag "part[id]", product.master.id %>
-            <%= t :no_variants %>
+            <%= Spree.t(:no_variants) %>
           <% end %>
         </td>
         <td><%= text_field_tag "part[count]", 1 %></td>
 		    <td class="actions">
           <%= image_tag "spinner.gif", :style => "display:none", :class => "spinner" %>
-		      <%= link_to(icon('add') + ' ' + t('select'), 
+		      <%= link_to(icon('add') + ' ' + Spree.t(:select), 
 		                  admin_product_parts_path(@product),
 		                  :class => "add_product_part_link") %>
 		    </td>           
       </tr>
     <% end %>
     <% if @available_products.empty? %>
-     <tr><td colspan="3"><%= t('no_match_found') %>.</td></tr>
+     <tr><td colspan="3"><%= Spree.t(:no_match_found) %>.</td></tr>
     <% end %>
   </tbody>
 </table>
