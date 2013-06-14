@@ -25,15 +25,15 @@ module Spree
               next unless stock_location.stock_item(part)
 
               on_hand, backordered = stock_location.fill_status(part, line_item.quantity * product.count_of(part))
-              package.add part, on_hand, :on_hand if on_hand > 0
-              package.add part, backordered, :backordered if backordered > 0
+              package.add part, on_hand, :on_hand, line_item if on_hand > 0
+              package.add part, backordered, :backordered, line_item if backordered > 0
             end
           else
             next unless stock_location.stock_item(line_item.variant)
 
             on_hand, backordered = stock_location.fill_status(line_item.variant, line_item.quantity)
-            package.add line_item.variant, on_hand, :on_hand if on_hand > 0
-            package.add line_item.variant, backordered, :backordered if backordered > 0
+            package.add line_item.variant, on_hand, :on_hand, line_item if on_hand > 0
+            package.add line_item.variant, backordered, :backordered, line_item if backordered > 0
           end
         end
         package
