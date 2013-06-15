@@ -1,4 +1,4 @@
-<% shipment.variant_manifest.each do |item| %>
+<% shipment.manifest.each do |item| %>
   <tr class="stock-item" data-item-quantity="<%= item.quantity %>">
     <td class="item-image"><%= mini_image(item.variant) %></td>
     <td class="item-name">

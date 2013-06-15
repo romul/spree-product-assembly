@@ -1,14 +1,10 @@
 module Spree
   Shipment.class_eval do
+    # Overriden from Spree core as a product bundle part should not be put
+    # together with an individual product purchased (even though they're the
+    # very same variant) That is so we can tell the store admin which units
+    # were purchased individually and which ones as parts of the bundle
     def manifest
-      inventory_units.includes(:line_item, :variant).group_by(&:line_item).map do |line_item, units|
-        states = {}
-        units.group_by(&:state).each { |state, iu| states[state] = iu.count }
-        OpenStruct.new(line_item: line_item, variant: line_item.variant, quantity: units.length, states: states)
-      end
-    end
-
-    def variant_manifest
       items = []
       inventory_units.includes(:variant, :line_item).group_by(&:variant).each do |variant, units|
         states = {}
@@ -25,6 +21,18 @@ module Spree
         end
       end
       items
+    end
+
+    # There might be scenarios where we don't want to display every single
+    # variant on the shipment. e.g. when ordering a product bundle that includes
+    # 5 other parts. Frontend users should only see the product bundle as a
+    # single item to ship
+    def line_item_manifest
+      inventory_units.includes(:line_item, :variant).group_by(&:line_item).map do |line_item, units|
+        states = {}
+        units.group_by(&:state).each { |state, iu| states[state] = iu.count }
+        OpenStruct.new(line_item: line_item, variant: line_item.variant, quantity: units.length, states: states)
+      end
     end
   end
 end
