@@ -11,6 +11,8 @@ module Spree
 
         units.group_by(&:line_item).each do |line_item, units|
           units.group_by(&:state).each { |state, iu| states[state] = iu.count }
+          line_item ||= order.find_line_item_by_variant(variant)
+
           part = line_item.product.assembly?
           items << OpenStruct.new(part: part,
                                   product: line_item.product,
