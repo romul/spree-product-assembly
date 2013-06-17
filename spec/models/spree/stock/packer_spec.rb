@@ -39,15 +39,6 @@ module Spree
             expect(subject.packages.count).to eql 2
           end
         end
-
-        context "location doesn't have order items in stock" do
-          let(:stock_location) { create(:stock_location, propagate_all_variants: false) }
-          let(:packer) { Packer.new(stock_location, order) }
-
-          it "builds an empty package" do
-            packer.product_assembly_package.contents.should be_empty
-          end
-        end
       end
     end
   end
