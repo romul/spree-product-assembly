@@ -4,6 +4,9 @@ module Spree
     # together with an individual product purchased (even though they're the
     # very same variant) That is so we can tell the store admin which units
     # were purchased individually and which ones as parts of the bundle
+    #
+    # Account for situations where we can't track the line_item for a variant.
+    # This should avoid exceptions when users upgrade from spree 1.3
     def manifest
       items = []
       inventory_units.includes(:variant, :line_item).group_by(&:variant).each do |variant, units|
@@ -13,9 +16,9 @@ module Spree
           units.group_by(&:state).each { |state, iu| states[state] = iu.count }
           line_item ||= order.find_line_item_by_variant(variant)
 
-          part = line_item.product.assembly?
+          part = line_item ? line_item.product.assembly? : false
           items << OpenStruct.new(part: part,
-                                  product: line_item.product,
+                                  product: line_item.try(:product),
                                   line_item: line_item,
                                   variant: variant,
                                   quantity: units.length,

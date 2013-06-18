@@ -3,7 +3,7 @@
     <td class="item-image"><%= mini_image(item.variant) %></td>
     <td class="item-name">
       <%= item.variant.product.name %><br><%= "(" + variant_options(item.variant) + ")" unless item.variant.option_values.empty? %>
-      <% if item.part %>
+      <% if item.part && item.line_item %>
         <i>Part of bundle <%= item.product.sku %></i>
       <% end %>
     </td>
@@ -11,7 +11,7 @@
       <% if item.part %>
         ---
       <% else %>
-        <%= item.line_item.single_money.to_html %>
+        <%= item.line_item.single_money.to_html if item.line_item %>
       <% end %>
     </td>
     <td class="item-qty-show align-center">
@@ -28,7 +28,7 @@
       <% if item.part %>
         ---
       <% else %>
-        <%= line_item_shipment_price(item.line_item, item.quantity) %>
+        <%= line_item_shipment_price(item.line_item, item.quantity) if item.line_item %>
       <% end %>
     </td>
     <td class="cart-item-delete actions" data-hook="cart_item_delete">
