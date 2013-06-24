@@ -1,0 +1,2 @@
+<!-- replace_contents  '.stock-contents tbody' -->
+<%= render 'stock_contents', shipment: shipment %>

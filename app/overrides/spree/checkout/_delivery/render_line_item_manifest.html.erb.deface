@@ -1,0 +1,3 @@
+<!-- replace_contents 'table[data-hook=stock-contents] tbody' -->
+
+<%= render 'line_item_manifest', ship_form: ship_form %>
