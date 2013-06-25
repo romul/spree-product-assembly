@@ -7,6 +7,9 @@ Spree::Product.class_eval do
         :join_table => "spree_assemblies_parts",
         :foreign_key => "assembly_id", :association_foreign_key => "part_id"
 
+  has_many :assemblies_parts, :class_name => "Spree::AssembliesPart",
+    :foreign_key => "assembly_id"
+
   scope :individual_saled, where(["spree_products.individual_sale = ?", true])
 
   scope :active, lambda { |*args|
