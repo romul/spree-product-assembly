@@ -1,7 +1,6 @@
 jQuery ->
   toggleInput = ->
     link = $(this)
-    console.log(link)
     link.parent().find('a.edit-line-item').toggle()
     link.parent().find('a.cancel-line-item').toggle()
     link.parent().find('a.save-line-item').toggle();

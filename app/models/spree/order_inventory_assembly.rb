@@ -26,7 +26,7 @@ module Spree
 
     def inventory_units
       units = order.shipments.collect { |s| s.inventory_units.all }.flatten
-      @inventory_units ||= units.group_by(&:line_item)[line_item.id] || []
+      @inventory_units ||= units.group_by(&:line_item)[line_item] || []
     end
 
     private
@@ -45,11 +45,10 @@ module Spree
         end
       end
 
-      # Returns either one of the shipment:
+      # Returns either one of the shipment
       #
       # first unshipped that already includes this variant
       # first unshipped that's leaving from a stock_location that stocks this variant
-      #
       def determine_target_shipment(variant)
         shipment = order.shipments.detect do |shipment|
           (shipment.ready? || shipment.pending?) && shipment.include?(variant)
@@ -60,9 +59,8 @@ module Spree
         end
       end
 
-      # create inventory_units
-      # adding to this shipment, and removing from stock_location
-      # return quantity added
+      # Create inventory_units for the shipment and remove items from stock
+      # Returns quantity added
       def add_to_shipment(shipment, variant, quantity)
         on_hand, back_order = shipment.stock_location.fill_status(variant, quantity)
 
@@ -78,6 +76,7 @@ module Spree
         quantity
       end
 
+      # Returns quantity removed
       def remove_from_shipment(shipment, variant, quantity)
         return 0 if quantity == 0 || shipment.shipped?
 
@@ -93,14 +92,10 @@ module Spree
           removed_quantity += 1
         end
 
-        if shipment.inventory_units.count == 0
-          shipment.destroy
-        end
+        shipment.destroy if shipment.inventory_units.count == 0
 
         # removing this from shipment, and adding to stock_location
         shipment.stock_location.restock variant, removed_quantity, shipment
-
-        # return quantity removed
         removed_quantity
       end
   end
