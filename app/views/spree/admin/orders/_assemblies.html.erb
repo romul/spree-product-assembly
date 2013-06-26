@@ -46,13 +46,17 @@
             <%= item.display_amount.to_html %>
           </td>
           <td class="cart-item-delete actions" data-hook="cart_item_delete">
-            <% if can? :update, item %>
-              <%= link_to '', [:admin, @order, item], :class => 'save-line-item icon_link icon-ok no-text with-tip',
-                :title => Spree.t('actions.save'), :style => 'display: none' %>
-              <%= link_to '', '#', :class => 'cancel-line-item icon_link icon-cancel no-text with-tip',
-                :title => Spree.t('actions.cancel'), :style => 'display: none' %>
-              <%= link_to '', '#', :class => 'edit-line-item icon_link icon-edit no-text with-tip',
-                :title => Spree.t('edit') %>
+            <% unless item.any_units_shipped? %>
+              <% if can? :update, item %>
+                <%= link_to '', [:admin, @order, item], :class => 'save-line-item icon_link icon-ok no-text with-tip',
+                  :title => Spree.t('actions.save'), :style => 'display: none' %>
+                <%= link_to '', '#', :class => 'cancel-line-item icon_link icon-cancel no-text with-tip',
+                  :title => Spree.t('actions.cancel'), :style => 'display: none' %>
+                <%= link_to '', '#', :class => 'edit-line-item icon_link icon-edit no-text with-tip',
+                  :title => Spree.t('edit') %>
+                <%= link_to '', [:admin, @order, item], :class => 'delete-line-item icon-trash no-text with-tip',
+                  confirm: Spree.t(:are_you_sure), :title => Spree.t('delete') %>
+              <% end %>
             <% end %>
           </td>
         </tr>

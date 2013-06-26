@@ -23,3 +23,15 @@ jQuery ->
         window.location.reload()
 
     false
+
+  ($ '.delete-line-item').click ->
+    if confirm("Are you sure?")
+      quantity = parseInt(($ this).parents('tr').find('input.line_item_quantity').val())
+
+      $.ajax
+        type: "DELETE",
+        url: ($ this).attr("href"),
+        success: (result) ->
+          window.location.reload()
+
+    false
