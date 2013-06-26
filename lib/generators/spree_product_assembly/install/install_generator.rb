@@ -7,6 +7,10 @@ module SpreeProductAssembly
         run 'rake railties:install:migrations FROM=spree_product_assembly'
       end
 
+      def add_javascripts
+        append_file "app/assets/javascripts/admin/all.js", "//= require admin/spree_product_assembly"
+      end
+
       def run_migrations
         run_migrations = options[:auto_run_migrations] || ['', 'y', 'Y'].include?(ask 'Would you like to run the migrations now? [Y/n]')
         if run_migrations
