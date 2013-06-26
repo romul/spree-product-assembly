@@ -1,4 +1,12 @@
 module Spree
+  # This class has basically the same functionality of Spree core OrderInventory
+  # except that it takes account of bundle parts and properly creates and removes
+  # inventory unit for each parts of a bundle
+  #
+  # TODO A lot of code here could be removed to avoid duplicated logic once we
+  # improve spree core OrderInventory API. Then we could just inherit from
+  # that class and only override what's needed for the specs of this extension
+  # e.g. `verify`, `inventory_units` and `remove`
   class OrderInventoryAssembly
     attr_reader :order, :line_item, :product
 
