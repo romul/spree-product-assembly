@@ -15,7 +15,7 @@ describe "Parts", js: true do
   it "add and remove parts" do
     visit spree.admin_product_path(tshirt)
     click_on "Parts"
-    fill_in "searchtext", with: "Mug"
+    fill_in "searchtext", with: mug.name
 
     within("#search_hits") { click_on "Select" }
     page.should have_content(mug.sku)
