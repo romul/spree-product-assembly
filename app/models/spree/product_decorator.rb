@@ -18,6 +18,8 @@ Spree::Product.class_eval do
 
   attr_accessible :can_be_part, :individual_sale
 
+  validate :assembly_cannot_be_part, :if => :assembly?
+
   def add_part(variant, count = 1)
     ap = Spree::AssembliesPart.get(self.id, variant.id)
     if ap
@@ -64,5 +66,9 @@ Spree::Product.class_eval do
   def count_of(variant)
     ap = Spree::AssembliesPart.get(self.id, variant.id)
     ap ? ap.count : 0
+  end
+
+  def assembly_cannot_be_part
+    errors.add(:can_be_part, "assembly can't be part") if can_be_part
   end
 end
