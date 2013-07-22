@@ -45,7 +45,10 @@ module Spree
                                            state: 'backordered'}, without_protection: true)
         end
 
-        shipment.stock_location.unstock variant, quantity, shipment
+        if order.completed?
+          shipment.stock_location.unstock variant, quantity, shipment
+        end
+
         quantity
       end
   end
