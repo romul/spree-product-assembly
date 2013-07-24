@@ -34,7 +34,7 @@ module Spree
 
     def inventory_units
       units = order.shipments.collect { |s| s.inventory_units.all }.flatten
-      @inventory_units ||= units.group_by(&:line_item)[line_item] || []
+      @inventory_units ||= units.group_by(&:line_item_id)[line_item.id] || []
     end
 
     private
