@@ -2,7 +2,10 @@ source "https://rubygems.org"
 
 gemspec
 
-gem 'spree', '~> 2.0.0'
+spree = ENV['SPREE'] || '2-0-stable'
+
+gem 'spree', github: 'spree/spree', branch: spree
+
 gem 'pry-rails'
 
 group :assets do
