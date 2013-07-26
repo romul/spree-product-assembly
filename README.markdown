@@ -6,7 +6,9 @@ Create a product which is composed of other products.
 
 Add the following line to your Gemfile
 
-    gem "spree_product_assembly", :git => "git://github.com/spree/spree-product-assembly.git"
+    gem "spree_product_assembly", github: "spree/spree-product-assembly"
+
+ps. Note current master branch is stable enough and tested against spree/spree 2-0-stable
 
 Run bundle install as well as the extension intall command to copy and run migrations and
 append spree_product_assembly to your js manifest file
@@ -26,9 +28,19 @@ exceptions. No need to run this task if you're not upgrading from product assemb
 
 # Use
 
-This extension adds a `can_be_part` boolean attribute to the spree_products_table.
-You'll need to check that flag on the backend product form so that it can be
-be found by the parts search form on the bundle product.
+To build a bundle (assembly product) you'd need to first check the "Can be part"
+flag on each product you want to be part of the bundle. Then create a product
+and add parts to it. By doing that you're making that product an assembly.
 
-Once a product is included as a _part_ of another it will be included on the order
-shipment and inventory units for each part will be created accordingly.
+The store will treat assemblies a bit different than regular products on checkout.
+Spree will create and track inventory units for its parts rather than for the product itself.
+That means you essentially have a product composed of other products. From a
+customer perspective it's like they are paying a single amount for a collection
+of products.
+
+Contributing
+------------
+
+Spree is an open source project and we encourage contributions. Please see the
+[contributors guidelines](http://spreecommerce.com/documentation/contributing_to_spree.html)
+before contributing.
