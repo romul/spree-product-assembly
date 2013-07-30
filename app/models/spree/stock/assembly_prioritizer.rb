@@ -29,6 +29,7 @@ module Spree
       end
 
       def prioritized_packages
+        sort_packages
         adjust_packages
         prune_packages
         packages
@@ -69,6 +70,10 @@ module Spree
 
         def prune_packages
           packages.reject! { |pkg| pkg.empty? }
+        end
+
+        def sort_packages
+          # override method for custom sorting
         end
     end
   end
