@@ -5,7 +5,50 @@ module Spree
     let!(:order) { create(:order_with_line_items) }
     let(:line_item) { order.line_items.first }
     let(:product) { line_item.product }
+    let(:variant) { line_item.variant }
     let(:inventory) { double('inventory') }
+
+    context "bundle parts stock" do
+      let(:parts) { (1..2).map { create(:variant) } }
+
+      before { product.parts << parts }
+
+      context "one of them not in stock" do
+        before do
+          product.parts.first.stock_items.update_all 'backorderable = ?', false
+          expect(parts.first).not_to be_in_stock
+        end
+
+        it "doesn't save line item quantity" do
+          line_item = order.contents.add(variant, 10)
+          expect(line_item).not_to be_valid
+        end
+      end
+
+      context "one of them not in stock" do
+        before do
+          product.parts.first.stock_items.update_all 'backorderable = ?', false
+          expect(parts.first).not_to be_in_stock
+        end
+
+        it "doesn't save line item quantity" do
+          line_item = order.contents.add(variant, 10)
+          expect(line_item).not_to be_valid
+        end
+      end
+
+      context "in stock" do
+        before do
+          expect(parts[0]).to be_in_stock
+          expect(parts[1]).to be_in_stock
+        end
+
+        it "saves line item quantity" do
+          line_item = order.contents.add(variant, 10)
+          expect(line_item).to be_valid
+        end
+      end
+    end
 
     context "updates bundle product line item" do
       let(:parts) { (1..2).map { create(:variant) } }
