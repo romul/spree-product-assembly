@@ -1,6 +1,10 @@
 module SpreeProductAssembly
   class Engine < Rails::Engine
     engine_name 'spree_product_assembly'
+    
+    initializer "spree.advanced_cart.environment", :before => :load_config_initializers do |app|
+      Spree::ProductAssembly::Config = Spree::ProductAssemblyConfiguration.new
+    end
 
     config.autoload_paths += %W(#{config.root}/lib)
 

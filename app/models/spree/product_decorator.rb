@@ -14,6 +14,7 @@ Spree::Product.class_eval do
     .limit(30)
   }
 
+  after_update :check_auto_assembly_price
   validate :assembly_cannot_be_part, :if => :assembly?
 
   def add_part(variant, count = 1)
@@ -47,6 +48,23 @@ Spree::Product.class_eval do
 
   def assembly_cannot_be_part
     errors.add(:can_be_part, Spree.t(:assembly_cannot_be_part)) if can_be_part
+  end
+
+  def recalculate_assembly_price
+    my_discount = discount || Spree::ProductAssembly::Config[:default_discount_for_auto_recalc] 
+    part_total = parts.includes(:default_price).map do |part|
+      part.default_price.amount * count_of(part)
+    end.sum
+
+    price = master.default_price
+    price_amount = part_total * (1-my_discount/100)
+    price.update_attribute(:amount, price_amount)
+  end
+
+  def check_auto_assembly_price
+    return unless (assembly? and discount_changed?)
+
+    recalculate_assembly_price
   end
 
   private
