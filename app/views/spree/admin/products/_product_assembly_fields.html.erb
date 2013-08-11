@@ -8,6 +8,13 @@
 </p>
 
 <% if @product.assembly? %>
+  <% if Spree::ProductAssembly::Config[:auto_recalc_assemblies_price] %>
+  <p>
+    <%= f.label :discount, t("discount")%><br />
+    <%= f.text_field(:discount) %>
+  </p>
+  <% end %>
+
   <% content_for :head do %>
     <script type="text/javascript">
       jQuery(document).ready(function(){
