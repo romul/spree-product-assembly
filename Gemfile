@@ -13,5 +13,5 @@ end
 
 group :test do
   gem 'capybara', '~> 2.1.0'
-  gem 'selenium-webdriver', '~> 2.32.0'
+  gem 'selenium-webdriver', '~> 2.34.0'
 end

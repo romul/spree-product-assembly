@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Parts", js: true do
+describe "Parts" do
   stub_authorization!
 
   let!(:tshirt) { create(:product, :name => "T-Shirt") }
@@ -12,7 +12,7 @@ describe "Parts", js: true do
     click_on "Update"
   end
 
-  it "add and remove parts" do
+  it "add and remove parts", js: true do
     visit spree.admin_product_path(tshirt)
     click_on "Parts"
     fill_in "searchtext", with: mug.name
