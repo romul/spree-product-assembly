@@ -17,7 +17,7 @@ module Spree
     end
 
     def verify(shipment = nil)
-      parts_total = product.assemblies_parts.sum(&:count)
+      parts_total = product.assemblies_parts.to_a.sum(&:count)
 
       if inventory_units.size < (parts_total * line_item.quantity)
 
@@ -33,7 +33,7 @@ module Spree
     end
 
     def inventory_units
-      units = order.shipments.collect { |s| s.inventory_units.all }.flatten
+      units = order.shipments.collect { |s| s.inventory_units.to_a }.flatten
       @inventory_units ||= units.group_by(&:line_item_id)[line_item.id] || []
     end
 
@@ -73,11 +73,11 @@ module Spree
         on_hand, back_order = shipment.stock_location.fill_status(variant, quantity)
 
         on_hand.times do
-          shipment.inventory_units.create({line_item: line_item, variant: variant, state: 'on_hand'}, without_protection: true)
+          shipment.inventory_units.create(line_item: line_item, variant: variant, state: 'on_hand')
         end
 
         back_order.times do
-          shipment.inventory_units.create({line_item: line_item, variant: variant, state: 'backordered'}, without_protection: true)
+          shipment.inventory_units.create(line_item: line_item, variant: variant, state: 'backordered')
         end
 
         shipment.stock_location.unstock variant, quantity, shipment

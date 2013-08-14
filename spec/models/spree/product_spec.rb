@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Spree::Product do
   before(:each) do
     @product = FactoryGirl.create(:product, :name => "Foo Bar")
-    @master_variant = Spree::Variant.find_by_product_id(@product.id, :conditions => ["is_master = ?", true])
+    @master_variant = Spree::Variant.where(is_master: true).find_by_product_id(@product.id)
   end
     
   describe "Spree::Product.active" do

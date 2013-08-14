@@ -8,7 +8,7 @@ module Spree
     end
 
     def save
-      self.class.update_all("count = #{count}", ["assembly_id = ? AND part_id = ?", assembly_id, part_id])
+      self.class.where(["assembly_id = ? AND part_id = ?", assembly_id, part_id]).update_all count: count
     end
 
     def destroy

@@ -36,13 +36,11 @@ module Spree
         on_hand, back_order = shipment.stock_location.fill_status(variant, quantity)
 
         on_hand.times do
-          shipment.inventory_units.create({variant_id: variant.id, line_item_id: line_item.id,
-                                            state: 'on_hand'}, without_protection: true)
+          shipment.inventory_units.create(variant_id: variant.id, line_item_id: line_item.id, state: 'on_hand')
         end
 
         back_order.times do
-          shipment.inventory_units.create({variant_id: variant.id, line_item_id: line_item.id,
-                                           state: 'backordered'}, without_protection: true)
+          shipment.inventory_units.create(variant_id: variant.id, line_item_id: line_item.id, state: 'backordered')
         end
 
         if order.completed?

@@ -15,19 +15,7 @@ module Spree
 
       context "one of them not in stock" do
         before do
-          product.parts.first.stock_items.update_all 'backorderable = ?', false
-          expect(parts.first).not_to be_in_stock
-        end
-
-        it "doesn't save line item quantity" do
-          line_item = order.contents.add(variant, 10)
-          expect(line_item).not_to be_valid
-        end
-      end
-
-      context "one of them not in stock" do
-        before do
-          product.parts.first.stock_items.update_all 'backorderable = ?', false
+          product.parts.first.stock_items.update_all backorderable: false
           expect(parts.first).not_to be_in_stock
         end
 

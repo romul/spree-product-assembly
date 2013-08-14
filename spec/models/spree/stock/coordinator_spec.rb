@@ -16,7 +16,7 @@ module Spree
           let(:bundle_item_quantity) { order.find_line_item_by_variant(bundle_variant).quantity }
 
           it "calculates items quantity properly" do
-            expected_units_on_package = order.line_items.sum(&:quantity) - bundle_item_quantity + (bundle.parts.count * bundle_item_quantity)
+            expected_units_on_package = order.line_items.to_a.sum(&:quantity) - bundle_item_quantity + (bundle.parts.count * bundle_item_quantity)
 
             expect(subject.packages.sum(&:quantity)).to eql expected_units_on_package
           end
@@ -37,7 +37,7 @@ module Spree
         before { bundle.parts << parts }
 
         it "haha" do
-          expected_units_on_package = order.line_items.sum(&:quantity) - bundle_item_quantity + (bundle.parts.count * bundle_item_quantity)
+          expected_units_on_package = order.line_items.to_a.sum(&:quantity) - bundle_item_quantity + (bundle.parts.count * bundle_item_quantity)
           expect(subject.packages.sum(&:quantity)).to eql expected_units_on_package
         end
       end

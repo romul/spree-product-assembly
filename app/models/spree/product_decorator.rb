@@ -10,7 +10,7 @@ Spree::Product.class_eval do
   has_many :assemblies_parts, :class_name => "Spree::AssembliesPart",
     :foreign_key => "assembly_id"
 
-  scope :individual_saled, where(["spree_products.individual_sale = ?", true])
+  scope :individual_saled, -> { where(["spree_products.individual_sale = ?", true]) }
 
   scope :active, lambda { |*args|
     not_deleted.individual_saled.available(nil, args.first)
