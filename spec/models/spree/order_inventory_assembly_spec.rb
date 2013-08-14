@@ -16,7 +16,7 @@ module Spree
       order.finalize! 
     end
 
-    subject { OrderInventoryAssembly.new(line_item.reload) }
+    subject { OrderInventoryAssembly.new(line_item) }
 
     context "inventory units count" do
       it "calculates the proper value for the bundle" do
@@ -26,7 +26,7 @@ module Spree
     end
 
     context "verify line item units" do
-      let!(:original_units_count) { line_item.quantity * bundle.assemblies_parts.to_a.sum(&:count) }
+      let!(:original_units_count) { subject.inventory_units.count }
 
       context "quantity increases" do
         before { subject.line_item.quantity += 1 }
@@ -34,7 +34,7 @@ module Spree
         it "inserts new inventory units for every bundle part" do
           expected_units_count = original_units_count + bundle.assemblies_parts.to_a.sum(&:count)
           subject.verify
-          expect(OrderInventoryAssembly.new(line_item).inventory_units.count).to eql(expected_units_count)
+          expect(OrderInventoryAssembly.new(line_item.reload).inventory_units.count).to eql(expected_units_count)
         end
       end
 
@@ -44,7 +44,10 @@ module Spree
         it "remove inventory units for every bundle part" do
           expected_units_count = original_units_count - bundle.assemblies_parts.to_a.sum(&:count)
           subject.verify
-          expect(OrderInventoryAssembly.new(line_item).inventory_units.count).to eql(expected_units_count)
+
+          # needs to reload so that inventory units are fetched from updates order.shipments
+          updated_units_count = OrderInventoryAssembly.new(line_item.reload).inventory_units.count
+          expect(updated_units_count).to eql(expected_units_count)
         end
       end
     end
