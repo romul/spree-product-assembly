@@ -2,11 +2,25 @@ require 'spec_helper'
 
 module Spree
   describe Shipment do
-    include_context "product is ordered as individual and within a bundle"
+    context "order has one product assembly" do
+      let(:order) { Order.create }
+      let(:bundle) { create(:variant) }
+      let!(:parts) { (1..2).map { create(:variant) } }
+      let!(:bundle_parts) { bundle.product.parts << parts }
 
-    let(:inventory_unit) { create(:inventory_unit) }
+      let!(:line_item) { order.contents.add(bundle, 1) }
+      let!(:shipment) { order.create_proposed_shipments.first }
+
+      before { order.update_column :state, 'complete' }
+
+      it "shipment item cost equals line item amount" do
+        expect(shipment.item_cost).to eq line_item.amount
+      end
+    end
 
     context "manifests" do
+      include_context "product is ordered as individual and within a bundle"
+
       let(:shipments) { order.create_proposed_shipments }
 
       context "default" do

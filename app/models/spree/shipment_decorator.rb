@@ -1,5 +1,20 @@
 module Spree
   Shipment.class_eval do
+    # Overriden from spree core
+    #
+    # As line items associated with a product assembly dont have their
+    # inventory units variant id equals to the line item variant id.
+    # That's because we create inventory units for the parts, which are
+    # actually other variants, rather than for the variant directly
+    # associated with the line item (the product assembly)
+    def line_items
+      if order.complete? and Spree::Config[:track_inventory_levels]
+        order.line_items.select { |li| inventory_units.pluck(:line_item_id).include?(li.id) }
+      else
+        order.line_items
+      end
+    end
+
     # Overriden from Spree core as a product bundle part should not be put
     # together with an individual product purchased (even though they're the
     # very same variant) That is so we can tell the store admin which units
