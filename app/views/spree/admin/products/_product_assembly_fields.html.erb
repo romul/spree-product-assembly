@@ -1,11 +1,15 @@
-<p>
-  <%= f.label :can_be_part, Spree.t(:can_be_part)%><br />
-  <%= f.check_box(:can_be_part) %>
-</p>
-<p>
-  <%= f.label :individual_sale, Spree.t(:individual_sale)%><br />
-  <%= f.check_box(:individual_sale) %>
-</p>
+<div class="left six columns alpha">
+  <div class="field">
+    <%= f.label :can_be_part, Spree.t(:can_be_part)%>
+    <%= f.check_box(:can_be_part) %>
+  </div>
+</div>
+<div class="right six columns omega">
+  <div class="field">
+    <%= f.label :individual_sale, Spree.t(:individual_sale)%>
+    <%= f.check_box(:individual_sale) %>
+  </div>
+</div>
 
 <% if @product.assembly? %>
   <% content_for :head do %>
