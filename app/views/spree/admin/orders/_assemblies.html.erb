@@ -55,7 +55,7 @@
                 <%= link_to '', '#', :class => 'edit-line-item icon_link icon-edit no-text with-tip',
                   :title => Spree.t('edit') %>
                 <%= link_to '', [:admin, @order, item], :class => 'delete-line-item icon-trash no-text with-tip',
-                  confirm: Spree.t(:are_you_sure), :title => Spree.t('delete') %>
+                  data: { confirm: Spree.t(:are_you_sure) }, :title => Spree.t('delete') %>
               <% end %>
             <% end %>
           </td>
