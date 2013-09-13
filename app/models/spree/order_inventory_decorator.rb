@@ -32,18 +32,11 @@ module Spree
       # TODO too much override for a very small change. need to find a better way
       # to override only what matters. e.g. changing the internals of OrderInventory
       # and/or InventoryUnit on spree core
-      def add_to_shipment(shipment, variant, quantity, line_item = nil)
+      def add_to_shipment(shipment, variant, quantity, line_item)
         on_hand, back_order = shipment.stock_location.fill_status(variant, quantity)
 
-        on_hand.times do
-          shipment.inventory_units.create({variant_id: variant.id, line_item_id: line_item.id,
-                                            state: 'on_hand'}, without_protection: true)
-        end
-
-        back_order.times do
-          shipment.inventory_units.create({variant_id: variant.id, line_item_id: line_item.id,
-                                           state: 'backordered'}, without_protection: true)
-        end
+        on_hand.times { shipment.set_up_inventory('on_hand', variant, order, line_item) }
+        back_order.times { shipment.set_up_inventory('backordered', variant, order, line_item) }
 
         if order.completed?
           shipment.stock_location.unstock variant, quantity, shipment

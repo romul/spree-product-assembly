@@ -2,6 +2,22 @@ module Spree
   Shipment.class_eval do
     # Overriden from spree core
     #
+    #   def set_up_inventory(state, variant, order)
+    #     self.inventory_units.create(variant_id: variant.id, state: state, order_id: order.id)
+    #   end
+    #
+    # Also assigns a line item to the inventory unit
+    def set_up_inventory(state, variant, order, line_item)
+      self.inventory_units.create({
+        state: state,
+        variant_id: variant.id,
+        order_id: order.id,
+        line_item_id: line_item.id
+      }, without_protection: true)
+    end
+
+    # Overriden from spree core
+    #
     # As line items associated with a product assembly dont have their
     # inventory units variant id equals to the line item variant id.
     # That's because we create inventory units for the parts, which are
