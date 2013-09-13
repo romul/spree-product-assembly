@@ -24,7 +24,7 @@ module Spree
     # This should avoid exceptions when users upgrade from spree 1.3
     def manifest
       items = []
-      inventory_units.includes(:variant, :line_item).group_by(&:variant).each do |variant, units|
+      inventory_units.joins(:variant).includes(:variant, :line_item).group_by(&:variant).each do |variant, units|
         states = {}
 
         units.group_by(&:line_item).each do |line_item, units|
