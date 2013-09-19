@@ -14,6 +14,8 @@ module Spree
           expect(variant.assemblies_for([mug, tshirt])).to include mug
           expect(variant.assemblies_for([mug, tshirt])).to include tshirt
         end
+
+        it { expect(variant).to be_a_part }
       end
 
       context "variant no assembly" do
