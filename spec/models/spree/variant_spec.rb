@@ -11,7 +11,8 @@ module Spree
         before { variant.assemblies.push [mug, tshirt] }
 
         it "returns both products" do
-          variant.assemblies_for([mug, tshirt]).should == [mug, tshirt]
+          expect(variant.assemblies_for([mug, tshirt])).to include mug
+          expect(variant.assemblies_for([mug, tshirt])).to include tshirt
         end
       end
 
