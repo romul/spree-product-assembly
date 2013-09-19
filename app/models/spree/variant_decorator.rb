@@ -6,4 +6,8 @@ Spree::Variant.class_eval do
   def assemblies_for(products)
     assemblies.where(id: products)
   end
+
+  def part?
+    assemblies.exists?
+  end
 end
