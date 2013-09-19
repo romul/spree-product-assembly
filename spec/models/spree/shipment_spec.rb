@@ -50,5 +50,21 @@ module Spree
         end
       end
     end
+
+    context "set up new inventory units" do
+      let(:line_item) { create(:line_item) }
+      let(:variant) { line_item.variant }
+      let(:order) { line_item.order }
+      let(:shipment) { create(:shipment) }
+
+      it "assigns variant, order and line_item" do
+        unit = shipment.set_up_inventory('on_hand', variant, order, line_item)
+
+        expect(unit.line_item).to eq line_item
+        expect(unit.variant).to eq variant
+        expect(unit.order).to eq order
+        expect(unit.state).to eq 'on_hand'
+      end
+    end
   end
 end

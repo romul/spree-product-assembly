@@ -8,15 +8,14 @@ Add the following line to your Gemfile
 
     gem "spree_product_assembly", github: "spree/spree-product-assembly"
 
-ps. Note current master branch is stable enough and tested against spree/spree 2-0-stable
-
 Run bundle install as well as the extension intall command to copy and run migrations and
 append spree_product_assembly to your js manifest file
 
     bundle install
     rails g spree_product_assembly:install
 
-_Use 1-3-stable branch for Spree 1.3.x compatibility_
+_master branch is compatible with spree edge and rails 4 only. Please use
+2-0-stable for Spree 2.0.x or 1-3-stable branch for Spree 1.3.x compatibility_
 
 _In case you're upgrading from 1-3-stable of this extension you might want to run a
 rake task which assigns a line item to your previous inventory units from bundle
