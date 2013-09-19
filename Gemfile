@@ -5,6 +5,7 @@ gemspec
 gem 'spree', github: 'spree/spree', :branch => 'master'
 
 gem 'pry-rails'
+gem 'pg'
 
 group :assets do
   gem 'coffee-rails', '~> 4.0.0'
