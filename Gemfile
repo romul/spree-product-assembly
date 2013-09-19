@@ -5,6 +5,7 @@ gemspec
 gem 'spree', github: 'spree/spree', branch: '2-0-stable'
 
 gem 'pry-rails'
+gem 'pg'
 
 group :assets do
   gem 'coffee-rails', '~> 3.2.2'

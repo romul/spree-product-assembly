@@ -15,7 +15,7 @@ module Spree
 
       context "one of them not in stock" do
         before do
-          product.parts.first.stock_items.update_all 'backorderable = ?', false
+          product.parts.first.stock_items.update_all backorderable: false
           expect(parts.first).not_to be_in_stock
         end
 
@@ -27,7 +27,7 @@ module Spree
 
       context "one of them not in stock" do
         before do
-          product.parts.first.stock_items.update_all 'backorderable = ?', false
+          product.parts.first.stock_items.update_all backorderable: false
           expect(parts.first).not_to be_in_stock
         end
 
