@@ -12,6 +12,6 @@
         <%= item.quantity %>
       <% end %>
     </td>
-    <td class="item-price"><%= display_price(item.variant) %></td>
+    <td class="item-price"><%= item.line_item.single_money %></td>
   </tr>
 <% end %>
