@@ -66,5 +66,47 @@ module Spree
         expect(unit.state).to eq 'on_hand'
       end
     end
+
+    context "unit states for variant sold as part of an assembly and separately" do
+      let(:assembly_line_item) { create(:line_item) }
+      let(:shirt) { create(:variant) }
+
+      let(:assembly_shirts) do
+        5.times.map {
+          create(:inventory_unit,
+                 variant: shirt,
+                 line_item: assembly_line_item,
+                 state: :on_hand)
+        }
+      end
+
+      let(:standalone_line_item) { create(:line_item, variant: shirt) }
+
+      let(:standalone_shirts) do
+        2.times.map {
+          create(:inventory_unit,
+                 variant: shirt,
+                 line_item: standalone_line_item,
+                 state: :on_hand)
+        }
+      end
+
+      let(:shipment) { create(:shipment) }
+
+      before do
+        shipment.inventory_units << assembly_shirts
+        shipment.inventory_units << standalone_shirts
+      end
+
+      it "set states numbers properly for all items" do
+        shipment.manifest.each do |item|
+          if item.line_item.id == standalone_line_item.id
+            expect(item.states["on_hand"]).to eq standalone_shirts.count
+          else
+            expect(item.states["on_hand"]).to eq assembly_shirts.count
+          end
+        end
+      end
+    end
   end
 end
