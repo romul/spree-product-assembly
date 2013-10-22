@@ -41,9 +41,9 @@ module Spree
     def manifest
       items = []
       inventory_units.joins(:variant).includes(:variant, :line_item).group_by(&:variant).each do |variant, units|
-        states = {}
 
         units.group_by(&:line_item).each do |line_item, units|
+          states = {}
           units.group_by(&:state).each { |state, iu| states[state] = iu.count }
           line_item ||= order.find_line_item_by_variant(variant)
 
