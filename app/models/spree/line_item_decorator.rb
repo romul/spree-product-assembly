@@ -2,6 +2,8 @@ module Spree
   LineItem.class_eval do
     scope :assemblies, -> { joins(:product => :parts).uniq }
 
+    has_many :inventory_units
+
     def any_units_shipped?
       OrderInventoryAssembly.new(self).inventory_units.any? do |unit|
         unit.shipped?

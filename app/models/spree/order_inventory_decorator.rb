@@ -2,24 +2,30 @@ module Spree
   OrderInventory.class_eval do
     # Overriden from Spree core only to pass a line_item to `add_to_shipment`
     #
-    # TODO this might not be necessary if we change the OrderInventory API
-    # to receive a line item on initialization rather than an order object
+    # Plus the collection of inventory units is fetched through line items rather
+    # than variants. Because a variant can be associated with more than one
+    # line item in the same shipment. Fetching inventory units through variants
+    # then will likely return the wrong number of units.
     def verify(line_item, shipment = nil)
       if order.completed? || shipment.present?
 
-        variant_units = inventory_units_for(line_item.variant)
+        units = inventory_units_for_item(line_item)
 
-        if variant_units.size < line_item.quantity
-          quantity = line_item.quantity - variant_units.size
+        if units.size < line_item.quantity
+          quantity = line_item.quantity - units.size
 
           shipment = determine_target_shipment(line_item.variant) unless shipment
           add_to_shipment(shipment, line_item.variant, quantity, line_item)
-        elsif variant_units.size > line_item.quantity
-          remove(line_item, variant_units, shipment)
+        elsif units.size > line_item.quantity
+          remove(line_item, units, shipment)
         end
       else
         true
       end
+    end
+
+    def inventory_units_for_item(line_item)
+      line_item.inventory_units
     end
 
     private
