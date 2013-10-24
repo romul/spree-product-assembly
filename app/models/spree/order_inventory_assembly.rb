@@ -2,11 +2,6 @@ module Spree
   # This class has basically the same functionality of Spree core OrderInventory
   # except that it takes account of bundle parts and properly creates and removes
   # inventory unit for each parts of a bundle
-  #
-  # TODO A lot of code here could be removed to avoid duplicated logic once we
-  # improve spree core OrderInventory API. Then we could just inherit from
-  # that class and only override what's needed for the specs of this extension
-  # e.g. `verify`, `inventory_units` and `remove`
   class OrderInventoryAssembly
     attr_reader :order, :line_item, :product
 
@@ -79,12 +74,11 @@ module Spree
         quantity
       end
 
-      # Returns quantity removed
       def remove_from_shipment(shipment, variant, quantity)
         return 0 if quantity == 0 || shipment.shipped?
 
-        shipment_units = shipment.inventory_units_for(variant).reject do |variant_unit|
-          variant_unit.state == 'shipped'
+        shipment_units = shipment.inventory_units_for_item(line_item, variant).reject do |unit|
+          unit.state == 'shipped'
         end.sort_by(&:state)
 
         removed_quantity = 0
@@ -97,7 +91,6 @@ module Spree
 
         shipment.destroy if shipment.inventory_units.count == 0
 
-        # removing this from shipment, and adding to stock_location
         shipment.stock_location.restock variant, removed_quantity, shipment
         removed_quantity
       end
