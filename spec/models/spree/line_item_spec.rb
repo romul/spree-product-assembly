@@ -27,8 +27,10 @@ module Spree
 
       context "one of them not in stock" do
         before do
-          product.parts.first.stock_items.update_all backorderable: false
-          expect(parts.first).not_to be_in_stock
+          part = product.parts.first
+          part.stock_items.update_all backorderable: false
+
+          expect(part).not_to be_in_stock
         end
 
         it "doesn't save line item quantity" do
