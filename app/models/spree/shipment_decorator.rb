@@ -70,5 +70,9 @@ module Spree
         OpenStruct.new(line_item: line_item, variant: line_item.variant, quantity: units.length, states: states)
       end
     end
+
+    def inventory_units_for_item(line_item, variant)
+      inventory_units.where(line_item_id: line_item.id, variant_id: variant.id)
+    end
   end
 end
