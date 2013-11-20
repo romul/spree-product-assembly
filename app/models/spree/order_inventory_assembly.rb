@@ -17,7 +17,7 @@ module Spree
       if inventory_units.size < (parts_total * line_item.quantity)
 
         product.parts.each do |part|
-          quantity = (product.count_of(part) * (line_item.quantity - line_item.changed_attributes['quantity']))
+          quantity = (product.count_of(part) * (line_item.quantity - line_item.changed_attributes['quantity'].to_i))
 
           shipment = determine_target_shipment(part) unless shipment
           add_to_shipment(shipment, part, quantity)
