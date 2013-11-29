@@ -64,8 +64,8 @@ module Spree
 
     context "updates regular line item" do
       it "verifies inventory units via OrderInventory" do
-        OrderInventory.should_receive(:new).with(line_item.order).and_return(inventory)
-        inventory.should_receive(:verify).with(line_item, line_item.target_shipment)
+        OrderInventory.should_receive(:new).with(line_item.order, line_item).and_return(inventory)
+        inventory.should_receive(:verify).with(line_item.target_shipment)
         line_item.save
       end
     end

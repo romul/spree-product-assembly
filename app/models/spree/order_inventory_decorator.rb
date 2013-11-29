@@ -10,7 +10,7 @@ module Spree
       # When looping through shipment inventory units we pick the ones that
       # match both variant and line_item. Otherwise we might accidentally remove
       # a part which was also purchased as a regular product
-      def remove_from_shipment(shipment, line_item, quantity)
+      def remove_from_shipment(shipment, quantity)
         return 0 if quantity == 0 || shipment.shipped?
 
         variant = line_item.variant

@@ -21,7 +21,7 @@ module Spree
         if self.product.assembly? && order.completed?
           OrderInventoryAssembly.new(self).verify(target_shipment)
         else
-          OrderInventory.new(self.order).verify(self, target_shipment)
+          OrderInventory.new(self.order, self).verify(target_shipment)
         end
       end
   end
