@@ -43,7 +43,7 @@ module Spree
             package.add line_item.variant, on_hand, :on_hand, line_item if on_hand > 0
             package.add line_item.variant, backordered, :backordered, line_item if backordered > 0
           else
-            package.add line_item.variant, line_item.quantity, :on_hand
+            package.add line_item.variant, line_item.quantity, :on_hand, line_item
           end
         end
         package
