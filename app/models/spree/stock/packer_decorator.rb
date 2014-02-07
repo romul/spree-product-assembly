@@ -26,7 +26,10 @@ module Spree
           product = line_item.product
           if product.assembly?
             product.parts.each do |part|
-              if part.should_track_inventory?
+              # Dont force users to upgrade spree core in order to bump product-assembly
+              if (!part.respond_to?(:should_track_inventory?) && Config.track_inventory_levels) ||
+                (part.respond_to?(:should_track_inventory?) && part.should_track_inventory?)
+
                 next unless stock_location.stock_item(part)
   
                 on_hand, backordered = stock_location.fill_status(part, line_item.quantity * product.count_of(part))
@@ -36,7 +39,9 @@ module Spree
                 package.add part, line_item.quantity * product.count_of(part), :on_hand, line_item
               end
             end
-          elsif line_item.should_track_inventory?
+          elsif (!line_item.respond_to?(:should_track_inventory?) && Config.track_inventory_levels) ||
+              (line_item.respond_to?(:should_track_inventory?) && line_item.should_track_inventory?)
+
             next unless stock_location.stock_item(line_item.variant)
 
             on_hand, backordered = stock_location.fill_status(line_item.variant, line_item.quantity)
