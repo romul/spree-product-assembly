@@ -40,6 +40,6 @@ class Spree::Admin::PartsController < Spree::Admin::BaseController
 
   private
     def find_product
-      @product = Spree::Product.find_by_permalink(params[:product_id])
+      @product = Spree::Product.find_by(slug: params[:product_id])
     end
 end
