@@ -40,7 +40,7 @@ module Spree
           order.line_items.each do |line_item|
 
             if line_item.product.assembly?
-              line_item.product.parts.each do |part|
+              line_item.parts.each do |part|
                 update_packages_quantity(part, line_item, part_quantity_required(line_item, part))
               end
             else
@@ -50,7 +50,7 @@ module Spree
         end
 
         def part_quantity_required(line_item, part)
-          line_item.product.count_of(part) * line_item.quantity
+          line_item.count_of(part) * line_item.quantity
         end
 
         def update_packages_quantity(variant, line_item, quantity)

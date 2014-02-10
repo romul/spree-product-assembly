@@ -12,12 +12,12 @@ module Spree
     end
 
     def verify(shipment = nil)
-      parts_total = product.assemblies_parts.to_a.sum(&:count)
+      parts_total = line_item.parts.sum {|v| line_item.count_of(v)}
 
       if inventory_units.size < (parts_total * line_item.quantity)
 
-        product.parts.each do |part|
-          quantity = (product.count_of(part) * (line_item.quantity - line_item.changed_attributes['quantity'].to_i))
+        line_item.parts.each do |part|
+          quantity = (line_item.count_of(part) * (line_item.quantity - line_item.changed_attributes['quantity'].to_i))
 
           self.variant = part
           shipment = determine_target_shipment unless shipment
@@ -30,8 +30,8 @@ module Spree
 
     private
       def remove(shipment = nil)
-        product.parts.each do |part|
-          quantity = (product.count_of(part) * (line_item.changed_attributes['quantity'] - line_item.quantity))
+        line_item.parts.each do |part|
+          quantity = (line_item.count_of(part) * (line_item.changed_attributes['quantity'] - line_item.quantity))
 
           self.variant = part
           if shipment.present?

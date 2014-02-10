@@ -3,7 +3,7 @@
     <td class="item-image"><%= mini_image(item.variant) %></td>
     <td class="item-name">
       <%= item.variant.name %>
-      <%= render 'spree/orders/cart_description', variant: item.variant %>
+      <%= render 'spree/orders/cart_description', variant: item.variant, line_item: item.line_item %>
     </td>
     <td class="item-qty">
       <% if item.line_item.product.assembly? %>

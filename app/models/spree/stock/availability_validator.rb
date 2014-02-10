@@ -1,13 +1,13 @@
 module Spree
   module Stock
-    # Overriden from spree core to make it also check for assembly parts stock
+    # Overridden from spree core to make it also check for assembly parts stock
     class AvailabilityValidator < ActiveModel::Validator
       def validate(line_item)
         product = line_item.product
 
         valid = if product.assembly?
-          product.parts.all? do |part|
-            Stock::Quantifier.new(part.id).can_supply?(product.count_of(part) * line_item.quantity)
+          line_item.parts.all? do |part|
+            Stock::Quantifier.new(part.id).can_supply?(line_item.count_of(part) * line_item.quantity)
           end
         else
           Stock::Quantifier.new(line_item.variant_id).can_supply? line_item.quantity

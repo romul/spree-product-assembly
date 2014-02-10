@@ -25,7 +25,7 @@ module Spree
         order.line_items.each do |line_item|
           product = line_item.product
           if product.assembly?
-            product.parts.each do |part|
+            line_item.parts.each do |part|
               if part.should_track_inventory?
                 next unless stock_location.stock_item(part)
 
