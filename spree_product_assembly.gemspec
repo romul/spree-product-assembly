@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.name        = 'spree_product_assembly'
-  s.version     = '2.0.0.beta'
+  s.version     = '2.2.0.beta'
   s.summary     = 'Adds oportunity to make bundle of products to your Spree store'
   s.description = 'Adds oportunity to make bundle of products to your Spree store'
   s.required_ruby_version = '>= 1.9.3'
@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
   s.requirements << 'none'
 
   s.add_dependency('spree_backend', '~> 2.2.0.beta')
-  
+
   s.add_development_dependency 'rspec-rails', '~> 2.14.0'
   s.add_development_dependency 'sqlite3'
   s.add_development_dependency 'ffaker'
