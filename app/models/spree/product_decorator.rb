@@ -58,7 +58,9 @@ Spree::Product.class_eval do
 
     price = master.default_price
     price_amount = part_total * (1-my_discount/100)
-    price.update_attribute(:amount, price_amount)
+    status = price.update_attribute(:amount, price_amount)
+    self.index if defined? Sunspot
+    status
   end
 
   def check_auto_assembly_price
