@@ -4,7 +4,6 @@ Spree::Price.class_eval do
   private
   
   def recalc_assemblies_price
-    puts "Spree::Price.after_update"
     return unless amount_changed?
     return unless Spree::ProductAssembly::Config[:auto_recalc_assemblies_price]
 
