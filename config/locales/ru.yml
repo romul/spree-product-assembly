@@ -1,6 +1,12 @@
+---
 ru:
-  available_parts: "Доступные составные части"
-  can_be_part: "Может входить в состав других продуктов"
-  individual_sale: "Может продаваться отдельно"
-  no_variants: "Нет вариантов"
-  parts: "Составные части"
+  spree:
+    available_parts: Доступные составные части
+    can_be_part: Может входить в состав других продуктов
+    individual_sale: Может продаваться отдельно
+    no_variants: Нет вариантов
+    parts: Составные части
+    assembly_cannot_be_part: сборка не может быть частью
+    product_bundles: Продукт cвязки
+    parts_included: 'Детали, входящие'
+    part_of_bundle: 'Часть пучка %{sku}'

@@ -4,7 +4,7 @@
     <td class="item-name">
       <%= item.variant.product.name %><br><%= "(" + variant_options(item.variant) + ")" unless item.variant.option_values.empty? %>
       <% if item.part && item.line_item %>
-        <i>Part of bundle <%= item.product.sku %></i>
+        <i><%= Spree.t(:part_of_bundle, sku: item.product.sku) %></i>
       <% end %>
     </td>
     <td class="item-price align-center">
