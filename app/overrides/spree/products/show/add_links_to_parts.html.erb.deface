@@ -1,7 +1,7 @@
 <!-- insert_after '#cart-form' -->
 <% if @product.parts.any?(&:in_stock?) %>
 
-  <h6>Parts included</h6>
+  <h6><%= Spree.t(:parts_included) %></h6>
 
   <ul id="products" class="inline product-listing" data-hook>
     <% @product.parts.each do |variant| %>

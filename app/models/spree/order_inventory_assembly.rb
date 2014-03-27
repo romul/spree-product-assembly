@@ -12,7 +12,7 @@ module Spree
     end
 
     def verify(shipment = nil)
-      parts_total = line_item.parts.sum {|v| line_item.count_of(v)}
+      parts_total = line_item.parts.to_a.sum {|v| line_item.count_of(v)}
 
       if inventory_units.size < (parts_total * line_item.quantity)
 

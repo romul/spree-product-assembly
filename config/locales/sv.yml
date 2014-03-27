@@ -1,0 +1,12 @@
+---
+sv:
+  spree:
+    available_parts: Tillgängliga delar
+    can_be_part: Kan vara del
+    individual_sale: Individuell försäljning
+    no_variants: Inga varianter
+    parts: Delar
+    assembly_cannot_be_part: enheten kan inte vara en del
+    product_bundles: Produktpaket
+    parts_included: Delar som ingår
+    part_of_bundle: 'Del av %{sku}'
