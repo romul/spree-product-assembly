@@ -26,6 +26,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'capybara', '~> 2.2.1'
   s.add_development_dependency 'selenium-webdriver', '~> 2.40'
   s.add_development_dependency 'simplecov'
-  s.add_development_dependency 'pry-rails'
   s.add_development_dependency 'pg'
 end
