@@ -17,38 +17,22 @@ Spree::Product.class_eval do
   validate :assembly_cannot_be_part, :if => :assembly?
 
   def add_part(variant, count = 1)
-    ap = Spree::AssembliesPart.get(self.id, variant.id)
-    if ap
-      ap.count += count
-      ap.save
-    else
-      self.parts << variant
-      set_part_count(variant, count) if count > 1
-    end
+    set_part_count(variant, count_of(variant) + count)
   end
 
   def remove_part(variant)
-    ap = Spree::AssembliesPart.get(self.id, variant.id)
-    unless ap.nil?
-      ap.count -= 1
-      if ap.count > 0
-        ap.save
-      else
-        ap.destroy
-      end
-    end
+    set_part_count(variant, 0)
   end
 
   def set_part_count(variant, count)
-    ap = Spree::AssembliesPart.get(self.id, variant.id)
-    unless ap.nil?
-      if count > 0
-        ap.count = count
-        ap.save
-      else
-        ap.destroy
-      end
+    ap = assemblies_part(variant)
+    if count > 0
+      ap.count = count
+      ap.save
+    else
+      ap.destroy
     end
+    reload
   end
 
   def assembly?
@@ -56,11 +40,17 @@ Spree::Product.class_eval do
   end
 
   def count_of(variant)
-    ap = Spree::AssembliesPart.get(self.id, variant.id)
-    ap ? ap.count : 0
+    ap = assemblies_part(variant)
+    # This checks persisted because the default count is 1
+    ap.persisted? ? ap.count : 0
   end
 
   def assembly_cannot_be_part
     errors.add(:can_be_part, Spree.t(:assembly_cannot_be_part)) if can_be_part
+  end
+
+  private
+  def assemblies_part(variant)
+    Spree::AssembliesPart.get(self.id, variant.id)
   end
 end
