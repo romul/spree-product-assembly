@@ -16,6 +16,7 @@ describe "Parts", js: true do
     visit spree.admin_product_path(tshirt)
     click_on "Parts"
     fill_in "searchtext", with: mug.name
+    click_on "Search"
 
     within("#search_hits") { click_on "Select" }
     page.should have_content(mug.sku)

@@ -8,6 +8,7 @@
 <%= form_tag('#') do %>
   <label><%= Spree.t(:search) %>:</label>
   <input id="searchtext" size="25">
+  <button id="search_parts_button" class="fa fa-search button" name="button">Search</button>
 <% end %>
 
 <br/>
@@ -41,9 +42,10 @@
     }
   });
 
-  $("#searchtext").delayedObserver(function(element, value) {
+  $("#search_parts_button").click(function(e) {
+    e.preventDefault();
     search_for_parts();
-  }, 0.75);
+  });
 
   function subscribe_product_part_links()
   {
