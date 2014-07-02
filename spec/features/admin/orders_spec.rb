@@ -19,9 +19,9 @@ describe "Orders" do
 
   it "allows admin to edit product bundle", js: true do
     within("table.product-bundles") do
-      find(".icon-edit").click
+      find(".edit-line-item").click
       fill_in "quantity", :with => "2"
-      find(".icon-ok").click
+      find(".save-line-item").click
 
       sleep(1) # avoid odd "cannot rollback - no transaction is active: rollback transaction"
     end
