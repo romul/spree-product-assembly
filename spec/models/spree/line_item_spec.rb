@@ -29,6 +29,9 @@ module Spree
 
       context "in stock" do
         before do
+          parts.each do |part|
+            part.stock_items.first.set_count_on_hand(10)
+          end
           expect(parts[0]).to be_in_stock
           expect(parts[1]).to be_in_stock
         end
