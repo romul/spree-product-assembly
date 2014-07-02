@@ -12,9 +12,9 @@
     </td>
     <td class="actions">
       <% if can? :update, shipment %>
-        <%= link_to '', '#', :class => 'save-method icon_link icon-ok no-text with-tip',
+        <%= link_to '', '#', :class => 'save-method fa fa-ok no-text with-tip',
           :data => {'shipment-number' => shipment.number, :action => 'save'}, title: Spree.t('actions.save') %>
-        <%= link_to '', '#', :class => 'cancel-method icon_link icon-cancel no-text with-tip',
+        <%= link_to '', '#', :class => 'cancel-method fa fa-cancel no-text with-tip',
           :data => {:action => 'cancel'}, :title => Spree.t('actions.cancel') %>
       <% end %>
     </td>
@@ -35,7 +35,7 @@
 
   <td class="actions">
     <% if can? :update, shipment %>
-      <%= link_to '', '#', :class => 'edit-method icon_link icon-edit no-text with-tip', :data => {:action => 'edit'}, :title => Spree.t('edit') %>
+      <%= link_to '', '#', :class => 'edit-method fa fa-edit no-text with-tip', :data => {:action => 'edit'}, :title => Spree.t('edit') %>
     <% end %>
   </td>
 </tr>
@@ -47,8 +47,8 @@
   </td>
   <td class="actions">
     <% if can? :update, shipment %>
-      <%= link_to '', '#', :class => 'save-tracking icon_link icon-ok no-text with-tip', :data => {'shipment-number' => shipment.number, :action => 'save'}, :title => Spree.t('actions.save') %>
-      <%= link_to '', '#', :class => 'cancel-tracking icon_link icon-cancel no-text with-tip', :data => {:action => 'cancel'}, :title => Spree.t('actions.cancel') %>
+      <%= link_to '', '#', :class => 'save-tracking fa fa-ok no-text with-tip', :data => {'shipment-number' => shipment.number, :action => 'save'}, :title => Spree.t('actions.save') %>
+      <%= link_to '', '#', :class => 'cancel-tracking fa fa-cancel no-text with-tip', :data => {:action => 'cancel'}, :title => Spree.t('actions.cancel') %>
     <% end %>
   </td>
 </tr>
@@ -63,7 +63,7 @@
   </td>
   <td class="actions">
     <% if can? :update, shipment %>
-      <%= link_to '', '#', :class => 'edit-tracking icon_link icon-edit no-text with-tip', :data => {:action => 'edit'}, :title => Spree.t('edit') %>
+      <%= link_to '', '#', :class => 'edit-tracking fa fa-edit no-text with-tip', :data => {:action => 'edit'}, :title => Spree.t('edit') %>
     <% end %>
   </td>
 </tr>
