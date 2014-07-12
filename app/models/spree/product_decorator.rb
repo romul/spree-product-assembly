@@ -18,6 +18,11 @@ Spree::Product.class_eval do
   validate :assembly_cannot_be_part, :if => :assembly?
 
   def add_part(variant, count = 1)
+    if master.id == variant.id
+      assembly_cannot_be_part
+      return
+    end
+
     set_part_count(variant, count_of(variant) + count)
   end
 
@@ -47,7 +52,7 @@ Spree::Product.class_eval do
   end
 
   def assembly_cannot_be_part
-    errors.add(:can_be_part, Spree.t(:assembly_cannot_be_part)) if can_be_part
+    errors.add(:base, Spree.t(:assembly_cannot_be_part)) if can_be_part
   end
 
   def recalculate_assembly_price
