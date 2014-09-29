@@ -42,4 +42,8 @@ class Spree::Admin::PartsController < Spree::Admin::BaseController
     def find_product
       @product = Spree::Product.find_by(slug: params[:product_id])
     end
+
+    def model_class
+      Spree::AssembliesPart
+    end
 end
