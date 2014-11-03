@@ -41,6 +41,20 @@ That means you essentially have a product composed of other products. From a
 customer perspective it's like they are paying a single amount for a collection
 of products.
 
+## Using with spree_wombat
+
+If you use this with spree_wombat make sure that you add this extension after
+spree_wombat in your `Gemfile`
+
+This extension provides a specific serializer for shipments `assembly_shipment_serializer`, to use this in your Spree storefront make sure
+you configure spree_wombat like this:
+
+```ruby
+config.payload_builder = {
+  "Spree::Shipment" => {:serializer => "Spree::Wombat::AssemblyShipmentSerializer", :root => "shipments"}
+}
+```
+
 Contributing
 ------------
 
@@ -79,4 +93,3 @@ Copyright (c) 2014 [Spree Commerce Inc.][4] and [contributors][5], released unde
 [4]: https://github.com/spree
 [5]: https://github.com/spree/spree-product-assembly/graphs/contributors
 [6]: https://github.com/spree/spree-product-assembly/blob/master/LICENSE.md
-

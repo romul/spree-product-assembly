@@ -16,6 +16,7 @@ Gem::Specification.new do |s|
   s.requirements << 'none'
 
   s.add_dependency 'spree_backend', '~> 2.4.0.beta'
+  s.add_dependency 'active_model_serializers', '0.9.0.alpha1'
 
   s.add_development_dependency 'rspec-rails', '~> 2.14.0'
   s.add_development_dependency 'sqlite3'
@@ -26,5 +27,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'capybara', '~> 2.2.1'
   s.add_development_dependency 'selenium-webdriver', '~> 2.40'
   s.add_development_dependency 'simplecov'
+  s.add_development_dependency 'spree_wombat'
   s.add_development_dependency 'pg'
 end
