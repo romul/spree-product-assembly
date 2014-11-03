@@ -7,6 +7,8 @@ module Spree
       def items
         i = []
         object.line_items.each do |li|
+          next if li.nil?
+
           hsh = {
             product_id: li.variant.sku,
             name: li.name,
