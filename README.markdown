@@ -1,7 +1,7 @@
 # Product Assembly
 
-[![Build Status](https://secure.travis-ci.org/spree/spree-product-assembly.png)](https://travis-ci.org/spree/spree-product-assembly)
-[![Code Climate](https://codeclimate.com/github/spree/spree-product-assembly.png)](https://codeclimate.com/github/spree/spree-product-assembly)
+[![Build Status](https://secure.travis-ci.org/spree-contrib/spree-product-assembly.png)](https://travis-ci.org/spree-contrib/spree-product-assembly)
+[![Code Climate](https://codeclimate.com/github/spree-contrib/spree-product-assembly.png)](https://codeclimate.com/github/spree-contrib/spree-product-assembly)
 
 Create a product which is composed of other products.
 
@@ -9,7 +9,7 @@ Create a product which is composed of other products.
 
 Add the following line to your `Gemfile`
 ```ruby
-gem 'spree_product_assembly', github: 'spree/spree-product-assembly', branch: 'master'
+gem 'spree_product_assembly', github: 'spree-contrib/spree-product-assembly', branch: 'master'
 ```
 
 Run bundle install as well as the extension intall command to copy and run migrations and
