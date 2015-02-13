@@ -8,7 +8,7 @@ shared_context "product is ordered as individual and within a bundle" do
   let(:common_product) { order.variants.last }
 
   before do
-    expect(bundle_variant).to_not eql common_product
+    # expect(bundle_variant).to_not eql common_product
 
     bundle.parts << [parts, common_product]
   end

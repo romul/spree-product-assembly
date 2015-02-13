@@ -17,13 +17,13 @@
         <td><%= text_field_tag :count, @product.count_of(part) %></td>
   	    <td class="actions">
           <%= image_tag "spinner.gif", :style => "display:none", :class => "spinner" %>
-          <%= link_to(icon('edit') + ' ' + Spree.t(:update),
+          <%= link_to(icon('edit') + ' ',
                       set_count_admin_product_part_url(@product, part),
-                      :class => "set_count_admin_product_part_link") %>
+                      :class => "set_count_admin_product_part_link save-line-item fa fa-ok no-text") %>
 
-          <%= link_to(icon('delete') + ' ' + Spree.t(:remove), 
+          <%= link_to(icon('delete') + ' ', 
                       remove_admin_product_part_url(@product, part),
-                      :class => "remove_admin_product_part_link") %>             
+                      :class => "remove_admin_product_part_link delete-line-item fa fa-trash no-text") %>             
   	    </td>        
       </tr>
     <% end %>

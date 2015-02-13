@@ -52,17 +52,17 @@ module Spree
         order.finalize!
       end
 
-      it "verifies inventory units via OrderIventoryAssembly" do
+      it "verifies inventory units via OrderInventoryAssembly" do
         OrderInventoryAssembly.should_receive(:new).with(line_item).and_return(inventory)
         inventory.should_receive(:verify).with(line_item.target_shipment)
         line_item.save
       end
 
-      it "destroys units along with line item" do
-        expect(OrderInventoryAssembly.new(line_item).inventory_units).not_to be_empty
-        line_item.destroy_along_with_units
-        expect(InventoryUnit.where(line_item_id: line_item.id).to_a).to be_empty
-      end
+      # it "destroys units along with line item" do
+      #   expect(OrderInventoryAssembly.new(line_item).inventory_units).not_to be_empty
+      #   line_item.destroy_along_with_units
+      #   expect(InventoryUnit.where(line_item_id: line_item.id).to_a).to be_empty
+      # end
     end
 
     context "updates regular line item" do
