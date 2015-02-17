@@ -6,7 +6,7 @@ module Spree
     let(:line_item) { order.line_items.first }
     let(:product) { line_item.product }
     let(:variant) { line_item.variant }
-    let(:inventory) { double('inventory') }
+    let(:inventory) { double('order_inventory') }
 
     context "bundle parts stock" do
       let(:parts) { (1..2).map { create(:variant) } }
@@ -22,8 +22,7 @@ module Spree
         end
 
         it "doesn't save line item quantity" do
-          line_item = order.contents.add(variant, 10)
-          expect(line_item).not_to be_valid
+          expect { order.contents.add(variant, 10) }.to raise_error ActiveRecord::RecordInvalid
         end
       end
 
@@ -55,20 +54,16 @@ module Spree
       it "verifies inventory units via OrderInventoryAssembly" do
         OrderInventoryAssembly.should_receive(:new).with(line_item).and_return(inventory)
         inventory.should_receive(:verify).with(line_item.target_shipment)
+        line_item.quantity = 2
         line_item.save
       end
-
-      # it "destroys units along with line item" do
-      #   expect(OrderInventoryAssembly.new(line_item).inventory_units).not_to be_empty
-      #   line_item.destroy_along_with_units
-      #   expect(InventoryUnit.where(line_item_id: line_item.id).to_a).to be_empty
-      # end
     end
 
     context "updates regular line item" do
       it "verifies inventory units via OrderInventory" do
         OrderInventory.should_receive(:new).with(line_item.order, line_item).and_return(inventory)
         inventory.should_receive(:verify).with(line_item.target_shipment)
+        line_item.quantity = 2
         line_item.save
       end
     end
