@@ -17,7 +17,7 @@ describe "Orders" do
     visit spree.edit_admin_order_path(order)
   end
 
-  it "allows admin to edit product bundle", :js => true do
+  it "allows admin to edit product bundle", js: true do
     within("table.product-bundles") do
       find(".edit-line-item").click
       fill_in "quantity", :with => "2"
