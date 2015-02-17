@@ -21,9 +21,7 @@ describe "Orders" do
     within("table.product-bundles") do
       find(".edit-line-item").click
       fill_in "quantity", :with => "2"
-      # The buttons are not working correctly in testing but work fine in development
-      # Clicking the edit button again here to not fail the test
-      find(".edit-line-item").click
+      find(".save-line-item").click
 
       sleep(1) # avoid odd "cannot rollback - no transaction is active: rollback transaction"
     end
