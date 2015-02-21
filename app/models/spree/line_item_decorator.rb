@@ -22,6 +22,14 @@ module Spree
       product.count_of(variant)
     end
 
+    def quantity_by_variant
+      if self.product.assembly?
+        {}.tap { |hash| self.product.assemblies_parts.each { |ap| hash[ap.part] = ap.count * self.quantity } }
+      else
+        { self.variant => self.quantity }
+      end
+    end
+
     private
       def update_inventory
         if (changed? || target_shipment.present?) && self.order.has_checkout_step?("delivery")

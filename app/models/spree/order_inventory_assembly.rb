@@ -13,9 +13,8 @@ module Spree
 
     def verify(shipment = nil)
       if order.completed? || shipment.present?
-        line_item.parts.each do |part|
+        line_item.quantity_by_variant.each do |part, total_parts|
           existing_parts = line_item.inventory_units.where(variant: part).count
-          total_parts = line_item.count_of(part) * line_item.quantity
 
           self.variant = part
 
