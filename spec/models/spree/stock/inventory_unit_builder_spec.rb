@@ -15,11 +15,10 @@ module Spree
               expect(units.count).to eq 4
               expect(units[0].line_item.quantity).to eq order.line_items.first.quantity
               expect(units[0].line_item.quantity).to eq bundle_item_quantity
+
               line_item = order.line_items.first
-              expect(units[0].variant).to eq line_item.parts[0]
-              expect(units[1].variant).to eq line_item.parts[1]
-              expect(units[2].variant).to eq line_item.parts[2]
-              expect(units[3].variant).to eq line_item.parts[3]
+
+              expect(units.map(&:variant)).to match_array line_item.parts
             end
 
             it "builds the inventory units as pending" do
