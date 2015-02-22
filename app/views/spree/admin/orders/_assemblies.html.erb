@@ -34,12 +34,12 @@
           <td class="item-price align-center">
             <%= item.single_money.to_html %>
           </td>
-          <td class="item-qty-show align-center">
+          <td class="line-item-qty-show align-center">
             <%= item.quantity %>
           </td>
 
-          <td class="item-qty-edit hidden">
-            <%= number_field_tag :quantity, item.quantity, :min => 0, :class => "line_item_quantity", :size => 5 %>
+          <td class="line-item-qty-edit hidden">
+            <%= number_field_tag :quantity, item.quantity, :min => 0, class: "line_item_quantity", :size => 5 %>
           </td>
 
           <td class="item-total align-center">
@@ -48,14 +48,10 @@
           <td class="cart-item-delete actions" data-hook="cart_item_delete">
             <% unless item.any_units_shipped? %>
               <% if can? :update, item %>
-                <%= link_to '', [:admin, @order, item], :class => 'save-line-item fa fa-ok no-text with-tip',
-                  :title => Spree.t('actions.save'), :style => 'display: none' %>
-                <%= link_to '', '#', :class => 'cancel-line-item fa fa-cancel no-text with-tip',
-                  :title => Spree.t('actions.cancel'), :style => 'display: none' %>
-                <%= link_to '', '#', :class => 'edit-line-item fa fa-edit no-text with-tip',
-                  :title => Spree.t('edit') %>
-                <%= link_to '', [:admin, @order, item], :class => 'delete-line-item fa fa-trash no-text with-tip',
-                  data: { confirm: Spree.t(:are_you_sure) }, :title => Spree.t('delete') %>
+              <%= link_to '', '#', :class => 'save-line-item fa fa-ok no-text with-tip', :data => { 'line-item-id' => item.id, :action => 'save'}, :title => Spree.t('actions.save'), :style => 'display: none' %>
+              <%= link_to '', '#', :class => 'cancel-line-item fa fa-cancel no-text with-tip', :data => {:action => 'cancel'}, :title => Spree.t('actions.cancel'), :style => 'display: none' %>
+              <%= link_to '', '#', :class => 'edit-line-item fa fa-edit no-text with-tip', :data => {:action => 'edit'}, :title => Spree.t('edit') %>
+              <%= link_to '', '#', :class => 'delete-line-item fa fa-trash no-text with-tip', :data => { 'line-item-id' => item.id, :action => 'remove'}, :title => Spree.t('delete') %>
               <% end %>
             <% end %>
           </td>

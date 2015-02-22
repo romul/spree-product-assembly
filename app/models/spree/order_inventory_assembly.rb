@@ -12,37 +12,28 @@ module Spree
     end
 
     def verify(shipment = nil)
-      parts_total = line_item.parts.to_a.sum {|v| line_item.count_of(v)}
-
-      if inventory_units.size < (parts_total * line_item.quantity)
-
-        line_item.parts.each do |part|
-          quantity = (line_item.count_of(part) * (line_item.quantity - line_item.changed_attributes['quantity'].to_i))
+      if order.completed? || shipment.present?
+        line_item.quantity_by_variant.each do |part, total_parts|
+          existing_parts = line_item.inventory_units.where(variant: part).count
 
           self.variant = part
-          shipment = determine_target_shipment unless shipment
-          add_to_shipment(shipment, quantity)
-        end
-      elsif inventory_units.size > (parts_total * line_item.quantity)
-        remove(shipment)
-      end
-    end
 
-    private
-      def remove(shipment = nil)
-        line_item.parts.each do |part|
-          quantity = (line_item.count_of(part) * (line_item.changed_attributes['quantity'] - line_item.quantity))
-
-          self.variant = part
-          if shipment.present?
-            remove_from_shipment(shipment, quantity)
-          else
-            order.shipments.each do |shipment|
-              break if quantity == 0
-              quantity -= remove_from_shipment(shipment, quantity)
+          if existing_parts < total_parts
+            shipment = determine_target_shipment unless shipment
+            add_to_shipment(shipment, total_parts - existing_parts)
+          elsif existing_parts > total_parts
+            quantity = existing_parts - total_parts
+            if shipment.present?
+              remove_from_shipment(shipment, quantity)
+            else
+              order.shipments.each do |shipment|
+                break if quantity == 0
+                quantity -= remove_from_shipment(shipment, quantity)
+              end
             end
           end
         end
       end
+    end
   end
 end

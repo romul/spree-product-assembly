@@ -3,19 +3,9 @@ module Spree
     scope :assemblies, -> { joins(:product => :parts).uniq }
 
     def any_units_shipped?
-      OrderInventoryAssembly.new(self).inventory_units.any? do |unit|
-        unit.shipped?
-      end
+      inventory_units.any? { |unit| unit.shipped? }
     end
 
-    # Destroy and verify inventory so that units are restocked back to the
-    # stock location
-    def destroy_along_with_units
-      self.quantity = 0
-      OrderInventoryAssembly.new(self).verify
-      self.destroy
-    end
-    
     # The parts that apply to this particular LineItem. Usually `product#parts`, but
     # provided as a hook if you want to override and customize the parts for a specific
     # LineItem.
@@ -32,12 +22,22 @@ module Spree
       product.count_of(variant)
     end
 
+    def quantity_by_variant
+      if self.product.assembly?
+        {}.tap { |hash| self.product.assemblies_parts.each { |ap| hash[ap.part] = ap.count * self.quantity } }
+      else
+        { self.variant => self.quantity }
+      end
+    end
+
     private
       def update_inventory
-        if self.product.assembly? && order.completed?
-          OrderInventoryAssembly.new(self).verify(target_shipment)
-        else
-          OrderInventory.new(self.order, self).verify(target_shipment)
+        if (changed? || target_shipment.present?) && self.order.has_checkout_step?("delivery")
+          if self.product.assembly?
+            OrderInventoryAssembly.new(self).verify(target_shipment)
+          else
+            OrderInventory.new(self.order, self).verify(target_shipment)
+          end
         end
       end
   end
