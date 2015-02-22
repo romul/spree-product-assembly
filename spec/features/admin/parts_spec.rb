@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Parts", js: true do
+describe "Parts", type: :feature, js: true do
   stub_authorization!
 
   let!(:tshirt) { create(:product, :name => "T-Shirt") }

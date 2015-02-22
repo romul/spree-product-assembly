@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Orders" do
+describe "Orders", type: :feature, js: true do
   stub_authorization!
 
   let(:order) { create(:order_with_line_items) }
@@ -13,11 +13,11 @@ describe "Orders" do
     line_item.update_attributes!(quantity: 3)
     order.reload.create_proposed_shipments
     order.finalize! 
-
-    visit spree.edit_admin_order_path(order)
   end
 
-  it "allows admin to edit product bundle", js: true do
+  it "allows admin to edit product bundle" do
+    visit spree.edit_admin_order_path(order)
+
     within("table.product-bundles") do
       find(".edit-line-item").click
       fill_in "quantity", :with => "2"

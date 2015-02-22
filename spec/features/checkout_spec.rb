@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Checkout" do
+describe "Checkout", type: :feature do
   let!(:country) { create(:country, :name => "United States", :states_required => true) }
   let!(:state) { create(:state, :name => "Ohio", :country => country) }
   let!(:shipping_method) { create(:shipping_method) }

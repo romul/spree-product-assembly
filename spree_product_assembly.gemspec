@@ -18,14 +18,15 @@ Gem::Specification.new do |s|
   s.add_dependency 'spree_backend', '~> 2.4.0'
   s.add_dependency 'active_model_serializers', '0.9.0.alpha1'
 
-  s.add_development_dependency 'rspec-rails', '~> 2.14.0'
+  s.add_development_dependency 'rspec-rails', '~> 3.1.0'
   s.add_development_dependency 'sqlite3'
   s.add_development_dependency 'ffaker'
   s.add_development_dependency 'factory_girl', '~> 4.4'
   s.add_development_dependency 'coffee-rails', '~> 4.0.0'
   s.add_development_dependency 'sass-rails', '~> 4.0.0'
-  s.add_development_dependency 'capybara', '~> 2.2.1'
-  s.add_development_dependency 'selenium-webdriver', '~> 2.40'
+  s.add_development_dependency 'capybara', '~> 2.4'
+  s.add_development_dependency 'poltergeist', '1.5.0'
+  s.add_development_dependency 'database_cleaner', '~> 1.3'
   s.add_development_dependency 'simplecov'
   s.add_development_dependency 'pg'
 end
