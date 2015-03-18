@@ -32,6 +32,6 @@ module Spree
         end
         i
       end
-    end
+    end if defined?(ShipmentSerializer)
   end
 end
