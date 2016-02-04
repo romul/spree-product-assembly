@@ -1,30 +1,34 @@
-<div class="left six columns alpha">
-  <div class="field">
-    <%= f.label :can_be_part, Spree.t(:can_be_part)%>
-    <%= f.check_box(:can_be_part) %>
+<div class="twelve columns">
+  <div class="left four columns alpha">
+    <div class="field">
+      <%= f.label :can_be_part, Spree.t(:can_be_part)%><br />
+      <%= f.check_box(:can_be_part) %>
+    </div>
   </div>
-</div>
-<div class="right six columns omega">
-  <div class="field">
-    <%= f.label :individual_sale, Spree.t(:individual_sale)%>
-    <%= f.check_box(:individual_sale) %>
+  <div class="four columns">
+    <div class="field">
+      <%= f.label :individual_sale, Spree.t(:individual_sale)%><br />
+      <%= f.check_box(:individual_sale) %>
+    </div>
   </div>
+
+  <% if @product.assembly? %>
+    <% if Spree::ProductAssembly::Config[:auto_recalc_assemblies_price] %>
+    <div class="right four columns omega">
+      <div class="field">
+        <%= f.label :discount, Spree.t(:discount)%><br />
+        <%= f.text_field(:discount) %>
+      </div>
+    </div>
+    <% end %>
+
+    <% content_for :head do %>
+      <script type="text/javascript">
+        jQuery(document).ready(function(){
+          $("input[id='product_on_hand']").attr('disabled',true).parent().hide();
+          $("input#product_can_be_part").attr('disabled',true);
+        });
+      </script>
+    <% end %>
+  <% end %>
 </div>
-
-<% if @product.assembly? %>
-  <% if Spree::ProductAssembly::Config[:auto_recalc_assemblies_price] %>
-  <p>
-    <%= f.label :discount, t("discount")%><br />
-    <%= f.text_field(:discount) %>
-  </p>
-  <% end %>
-
-  <% content_for :head do %>
-    <script type="text/javascript">
-      jQuery(document).ready(function(){
-        $("input[id='product_on_hand']").attr('disabled',true).parent().hide();
-        $("input#product_can_be_part").attr('disabled',true);
-      });
-    </script>
-  <% end %>
-<% end %>
